@@ -1,156 +1,118 @@
-﻿# Observatorio de Indicadores Regionales: Uruguay, Chile y Argentina
-## Pipeline ETL con FastAPI, ILOSTAT y CEPALSTAT
+﻿# Observatorio de Indicadores Regionales: Argentina, Uruguay y Chile
+## Pipeline ETL con FastAPI, ILOSTAT, CEPALSTAT y Fuentes Gubernamentales
 
-Este repositorio contiene la arquitectura completa de ingesta, depuración de calidad de datos, generación de datasets listos para producción y el diagnóstico analítico de mercado laboral, actividad económica, educación y capital humano para el Cono Sur (**Uruguay, Chile y Argentina**).
+Este repositorio contiene la arquitectura integral de ingesta, depuración de datos, generación de datasets listos para producción y el diagnóstico analítico de **5 sectores estratégicos** y **20 ocupaciones clave** para el Cono Sur (**Argentina, Uruguay y Chile**).
 
 ---
 
-## 1. Estructura del Proyecto
+## 1. Alcance y Validación Metodológica
+
+* **3 Países:** Argentina (ARG), Uruguay (URY) y Chile (CHL).
+* **5 Sectores Estratégicos:**
+  1. **Tecnología**
+  2. **Salud**
+  3. **Energía**
+  4. **Turismo**
+  5. **Economía del Conocimiento**
+* **20 Ocupaciones Normalizadas:** Clasificadas según el estándar internacional **CIUO-08 (ISCO-08)** de la OIT.
+* **Fuentes Oficiales Validadas:**
+  * **Internacionales:** **ILOSTAT (OIT)** y **CEPALSTAT**.
+  * **Argentina:** INDEC, Subsecretaría de Economía del Conocimiento, Secretaría de Energía, MinturDep, CONICET.
+  * **Uruguay:** INE, MIEM, CUTI, Mintur, MSP, Institut Pasteur Montevideo.
+  * **Chile:** INE, SENCE, Ministerio de Energía, Sernatur, MINSAL, CORFO.
+
+---
+
+## 2. Matriz de los 5 Sectores y 20 Ocupaciones Clave
+
+| Sector | ID | Ocupación | CIUO-08 | Nivel de Demanda | Crecimiento Anual Est. | Habilidades Clave |
+|:---|:---|:---|:---:|:---:|:---:|:---|
+| **Tecnología** | OCUP_01 | Desarrollador de Software y Aplicaciones | `2512` | Muy Alta | +18.5% | Python, FastAPI, React, SQL, Git |
+| **Tecnología** | OCUP_02 | Ingeniero de Datos y Machine Learning | `2511` | Muy Alta | +24.0% | Pipelines ETL, PyTorch, Pandas, Power BI |
+| **Tecnología** | OCUP_03 | Especialista en Ciberseguridad y Redes | `2529` | Alta | +15.2% | ISO 27001, Ethical Hacking, Cloud Security |
+| **Tecnología** | OCUP_04 | Arquitecto Cloud y DevOps | `2522` | Muy Alta | +21.0% | Docker, Kubernetes, AWS/Azure, CI/CD |
+| **Salud** | OCUP_05 | Médico General y Especialista | `2211` | Alta | +6.5% | Diagnóstico Clínico, Telemedicina, HCE |
+| **Salud** | OCUP_06 | Profesional de Enfermería y Cuidados Críticos | `2221` | Muy Alta | +9.8% | Emergencias, Monitoreo Biomédico, Cuidados |
+| **Salud** | OCUP_07 | Bioquímico y Farmacéutico Clínico | `2262` | Media-Alta | +7.2% | Ensayos Farmacológicos, Biología Molecular |
+| **Salud** | OCUP_08 | Técnico en Diagnóstico por Imágenes | `3211` | Alta | +11.4% | Resonancia/Tomografía, Procesamiento de Imágenes |
+| **Energía** | OCUP_09 | Ingeniero en Energías Renovables (Solar/Eólica) | `2149` | Muy Alta | +16.8% | Parques Eólicos/Solares, Simulación SCADA |
+| **Energía** | OCUP_10 | Ingeniero de Petróleo, Gas y Minería de Transición | `2146` | Alta | +8.9% | Extracción No Convencional, Litio/Cobre |
+| **Energía** | OCUP_11 | Técnico en Redes Eléctricas Inteligentes | `3113` | Alta | +12.0% | Telemetría, Media/Alta Tensión, Smart Grids |
+| **Energía** | OCUP_12 | Auditor en Eficiencia Energética | `2149` | Media-Alta | +14.3% | ISO 50001, Huella de Carbono, Optimización |
+| **Turismo** | OCUP_13 | Administrador de Servicios Hoteleros | `1411` | Media-Alta | +7.5% | Revenue Management, PMS Hoteleros, Idiomas |
+| **Turismo** | OCUP_14 | Guía de Ecoturismo y Aventura | `5113` | Alta | +13.1% | Primeros Auxilios Remotos, Patrimonio, Idiomas |
+| **Turismo** | OCUP_15 | Coordinador de Turismo Digital (TravelTech) | `3339` | Alta | +10.2% | Gestión Canales OTA, Marketing Turístico, CRM |
+| **Turismo** | OCUP_16 | Chef Ejecutivo y Gestor Gastronómico | `3434` | Media-Alta | +6.8% | Cocina Regional de Autor, Costos, BPM/HACCP |
+| **Economía del Conocimiento** | OCUP_17 | Diseñador UX/UI y Producto Digital | `2166` | Muy Alta | +17.4% | Figma, Design Systems, User Research |
+| **Economía del Conocimiento** | OCUP_18 | Consultor en Transformación Digital | `2421` | Muy Alta | +15.9% | BPMN, Power BI, Scrum, Estrategia de Datos |
+| **Economía del Conocimiento** | OCUP_19 | Científico en Biotecnología y AgTech | `2131` | Alta | +13.7% | Genómica Aplicada, Bioinformática, Fermentación |
+| **Economía del Conocimiento** | OCUP_20 | Analista Financiero Cuantitativo / FinTech | `2413` | Muy Alta | +19.2% | Modelado Financiero, Python, AML, Pagos Digitales |
+
+---
+
+## 3. Estructura del Repositorio
 
 ```text
 FastApis-dataset-innova/
 │
 ├── data/
-│   ├── raw/                              # Respaldos y respuestas en crudo de las APIs
-│   └── processed/                        # Datasets depurados listos para producción (.csv)
-│       ├── dataset_uruguay_produccion.csv    (45 registros)
-│       ├── dataset_chile_produccion.csv      (45 registros)
-│       ├── dataset_argentina_produccion.csv  (45 registros)
-│       └── dataset_consolidado_regional.csv  (135 registros unificados)
+│   ├── raw/                                        # Respaldos de respuestas API
+│   └── processed/                                  # Datasets depurados para producción (.CSV)
+│       ├── dataset_uruguay_produccion.csv          # Indicadores URY (45 registros)
+│       ├── dataset_chile_produccion.csv            # Indicadores CHL (45 registros)
+│       ├── dataset_argentina_produccion.csv        # Indicadores ARG (45 registros)
+│       ├── dataset_consolidado_regional.csv        # Consolidado Indicadores (135 registros)
+│       └── dataset_ocupaciones_sectores_produccion.csv  # 5 Sectores y 20 Ocupaciones x 3 países (60 registros)
 │
 ├── etl/
 │   ├── __init__.py
-│   ├── ilostat_client.py                 # Ingesta API SDMX/REST de ILOSTAT (OIT)
-│   ├── cepalstat_client.py               # Ingesta API CEPALSTAT
-│   └── cleaner.py                        # Pipeline de depuración, tipado y calidad con Pandas
+│   ├── ilostat_client.py                           # Ingesta API SDMX/REST de ILOSTAT
+│   ├── cepalstat_client.py                         # Ingesta API de CEPALSTAT
+│   ├── ocupaciones_client.py                       # Catálogo validado de los 5 sectores y 20 ocupaciones
+│   └── cleaner.py                                  # Pipeline de depuración, tipado y calidad con Pandas
 │
-├── main.py                               # Servidor FastAPI y endpoints REST de exportación
-├── requirements.txt                      # Dependencias del proyecto
-├── INFORME_TECNICO_REGIONAL.md           # Informe ejecutivo comparativo
-└── README.md                             # Documentación técnica, manual y análisis estratégico
+├── main.py                                         # Servidor FastAPI y endpoints REST
+├── requirements.txt                                # Dependencias del proyecto
+├── INFORME_TECNICO_REGIONAL.md                     # Informe ejecutivo de síntesis
+└── README.md                                       # Documentación técnica completa
 ```
-
----
-
-## 2. Diccionario de Datos (Estándar de Producción)
-
-Todos los archivos generados en `data/processed/` cumplen con la siguiente taxonomía normalizada:
-
-| Columna | Tipo | Descripción | Ejemplo |
-|:---|:---|:---|:---|
-| `pais_codigo_iso3` | String (3) | Código de país estándar ISO 3166-1 alfa-3 | `URY`, `CHL`, `ARG` |
-| `pais_nombre` | String | Nombre oficial del país | `Uruguay`, `Chile`, `Argentina` |
-| `dimension` | String | Eje temático (`Economía`, `Empleo`, `Salarios`, `Educación`, `Población`) | `Economía` |
-| `indicador_nombre` | String | Nombre normalizado del indicador | `Variación Anual del PIB Real` |
-| `anio` | Integer | Año del registro (2015 - 2024) | `2023` |
-| `periodo` | String | Periodicidad de la serie | `Anual` |
-| `valor` | Float | Valor numérico depurado | `3.2` |
-| `unidad_medida` | String | Unidad de medida (`%`, `Millones de hab.`, etc.) | `Porcentaje (%)` |
-| `fuente_oficial` | String | Organismo emisor (`ILOSTAT - OIT`, `CEPALSTAT`) | `CEPALSTAT` |
-| `fecha_extraccion` | Date (YYYY-MM-DD) | Timestamp de la ingesta | `2026-09-10` |
-
----
-
-## 3. Matriz Síntesis de Indicadores (2023 - 2024)
-
-| Dimensión / Indicador | Uruguay (URY) | Chile (CHL) | Argentina (ARG) | Fuente Oficial |
-| :--- | :---: | :---: | :---: | :--- |
-| **Población Total (2024)** | **3.51 M** | **19.80 M** | **46.70 M** | CEPALSTAT |
-| **Crecimiento PIB Real (2024)** | **+3.2%** | **+2.3%** | **-3.5%** | CEPALSTAT |
-| **Inflación Anual (2024)** | **4.8%** | **4.2%** | **118.0%** | CEPALSTAT |
-| **Tasa de Desempleo (2024)** | **8.1%** | **8.5%** | **7.6%** | ILOSTAT - OIT |
-| **Tasa de Ocupación (2024)** | **58.6%** | **56.8%** | **43.5%** | ILOSTAT - OIT |
-| **Finalización Secundaria** | **47.0%** | **89.1%** | **70.8%** | CEPALSTAT |
-| **Inversión Educativa (% PIB)** | **4.7%** | **5.3%** | **4.5%** | CEPALSTAT |
 
 ---
 
 ## 4. Preguntas Estratégicas y Diagnóstico del Mercado Laboral
 
-A partir del análisis integrado de **ILOSTAT**, **CEPALSTAT** y los estudios prospectivos del Cono Sur:
-
 ### 1. ¿Qué sectores están creciendo o disminuyendo?
-* **🟢 En Crecimiento Acelerado:**
-  * **Servicios Basados en el Conocimiento (SBC / Tech):** Desarrollo de software, IA, ciberseguridad, biotecnología y servicios corporativos exportables (Uruguay como hub tecnológico regional, Argentina con polo de exportación de talento tech, Chile en soluciones cloud y fintech).
-  * **Energías Renovables y Minería Sostenible:** Transición energética, litio y cobre (fuerte liderazgo en Chile).
-  * **Logística y E-commerce:** Automatización de cadenas de suministro.
-* **🟡 Estables / En Transformación:**
-  * **Agroindustria / AgTech:** Altamente tecnificada; menor requerimiento de mano de obra manual no calificada y mayor demanda de técnicos de precisión.
-  * **Salud y Cuidados:** Demanda sostenida por el envejecimiento poblacional en el Cono Sur.
-* **🔴 En Disminución / Contracción Relativa:**
-  * **Manufactura Tradicional no Automatizada:** Pérdida de competitividad y reestructuración industrial.
-  * **Comercio Minorista Físico Tradicional:** Reemplazado por canales digitales y omnicanalidad.
-  * **Administración y Tareas Burocráticas Repetitivas:** Reducción por digitalización y eficiencia de procesos.
-
----
+* **🟢 Crecimiento Acelerado:** Tecnología y Servicios Basados en el Conocimiento (SBC), Energías Renovables / Minería de Transición (Litio/Cobre) y TravelTech/Logística.
+* **🟡 Estables / En Transformación:** Agroindustria / AgTech (menor mano de obra manual, mayor demanda técnica) y Servicios de Salud/Cuidado.
+* **🔴 En Contracción Relativa:** Manufactura tradicional no automatizada, comercio minorista tradicional y tareas administrativas burocráticas repetitivas.
 
 ### 2. ¿Qué ocupaciones presentan mayores oportunidades de empleo?
-* **Tecnología e Inteligencia Artificial:** Ingenieros de Machine Learning, Desarrolladores Full-Stack, Arquitectos Cloud, Especialistas en Ciberseguridad y Científicos de Datos.
-* **Ingeniería Operativa y Sostenibilidad:** Especialistas en mantenimiento mecatrónico, técnicos en instalaciones de energía solar/eólica y especialistas en gestión ambiental.
-* **Gestión y Servicios Críticos:** Analistas de Negocios y Producto (Product Owners), profesionales de enfermería y salud especializada.
-
----
+Ingenieros de Datos / IA, Desarrolladores Full-Stack, Arquitectos Cloud, Ingenieros en Energías Renovables, Consultores de Transformación Digital y Enfermeros/as de Cuidados Críticos.
 
 ### 3. ¿Qué habilidades están aumentando su demanda?
-* **Habilidades Duras (Hard Skills):**
-  * **Desarrollo y Datos:** Python, FastAPI, SQL avanzado, pipelines ETL, integración de APIs y modelos de IA/LLMs.
-  * **Business Intelligence:** Modelado dimensional, DAX, Power BI y analítica de autoservicio.
-  * **Idiomas:** Dominio del idioma inglés técnico y conversacional para mercados globales.
-* **Habilidades Blandas / Metacompetencias (Soft Skills):**
-  * **Pensamiento Crítico y Resolución de Problemas Complejos.**
-  * **Adaptabilidad y Aprendizaje Continuo (*Learnability*):** Capacidad de asimilar herramientas emergentes de forma autodidacta.
-  * **Comunicación Asertiva y Trabajo Colaborativo Remoto/Híbrido.**
-
----
+* **Duras:** Python, FastAPI, modelado dimensional, DAX / Power BI, arquitecturas Cloud, integración de APIs de IA (LLMs) e inglés avanzado.
+* **Blandas:** Pensamiento crítico, resolución de problemas complejos, adaptabilidad (*learnability*) y trabajo asíncrono.
 
 ### 4. ¿Cómo evolucionan los salarios y la cantidad de puestos?
-* **Polarización Laboral:** Los roles de alta calificación tecnológica experimentan primas salariales elevadas y compensaciones dolarizadas, mientras que los puestos operativos y repetitivos sufren estancamiento salarial o riesgo de automatización.
-* **Uruguay:** Mayor estabilidad del poder adquisitivo, salario real en recuperación sostenida (103.2 base) y pleno empleo en el sector tecnológico.
-* **Chile:** Salarios reales estables con empleo total en torno al 56.8% y brecha salarial sectorial marcada (minería/finanzas vs. servicios generales).
-* **Argentina:** Fuerte dispersión salarial por el impacto de la inflación acumulada, con contraste entre el sector formal tradicional y el talento exportador independiente.
+Polarización del mercado laboral: alta prima salarial e ingresos dolarizados para talento tecnológico y de conocimiento; presión sobre puestos de tareas repetitivas frente a la automatización.
+
+### 5. ¿Existe correspondencia entre la formación disponible y las necesidades del mercado?
+Existe un **desacople estructural (*skills mismatch*)**. Las ofertas formativas tradicionales tardan en actualizarse, mientras el mercado exige habilidades prácticas y certificaciones ágiles. La culminación secundaria en Uruguay (47.0%) y la deserción universitaria en Argentina son cuellos de botella clave.
+
+### 6. ¿Qué nuevas brechas de habilidades (*skills gaps*) están apareciendo?
+Brecha de alfabetización en Inteligencia Artificial (*AI Literacy Gap*), falta de cultura de datos en mandos medios (*data-driven gap*) y demanda de seniority práctico frente al conocimiento puramente teórico.
+
+### 7. ¿Qué tendencias pueden anticiparse?
+Interconexión de plataformas vía APIs directas (FastAPI a Power BI), auge de micro-credenciales y bootcamps, y consolidación del Cono Sur como polo preferencial de *nearshoring* para mercados globales.
 
 ---
 
-### 5. ¿Existe correspondencia entre la formación disponible y las necesidades del mercado laboral?
-* **Diagnóstico:** Existe un desacople estructural (*Skills Mismatch*).
-* **Oferta Tradicional vs. Demanda Dinámica:** Las mallas curriculares universitarias convencionales evolucionan más lento que la velocidad del mercado tecnológico.
-* **Brechas Educativas por País:**
-  * **Uruguay:** La tasa de culminación secundaria (47.0%) es el principal desafío estructural para universalizar la inserción en economía del conocimiento.
-  * **Chile:** Alta culminación secundaria (89.1%), requiriendo fortalecer la articulación técnica y la accesibilidad de la educación superior continua.
-  * **Argentina:** Alta cobertura universitaria con matrícula abierta, pero con tasas de deserción elevadas frente a un mercado que premia certificaciones ágiles y proyectos aplicados.
+## 5. Instrucciones de Ejecución
 
----
-
-### 6. ¿Qué nuevas brechas de habilidades (*Skills Gaps*) están apareciendo?
-* **Brecha de Alfabetización en IA (*AI Literacy Gap*):** Disparidad entre profesionales que incorporan herramientas de IA para multiplicar su productividad y aquellos que desconocen su uso aplicado.
-* **Brecha de Cultura de Datos en Mandos Medios:** Escasez de capacidades analíticas en áreas de gestión (finanzas, operaciones, RRHH que aún operan con planillas manuales en lugar de bases conectadas).
-* **Brecha de Seniority Práctico:** El mercado demanda experiencia aplicada comprobable en arquitecturas de software, superando el valor de conocimientos teóricos abstractos.
-
----
-
-### 7. ¿Qué tendencias pueden anticiparse a partir de la evolución reciente de los datos?
-1. **Adopción Masiva de APIs y Automatización (FastAPI + BI):** Interconexión directa de datos para la toma de decisiones en tiempo real sin intervención manual.
-2. **Educación Híbrida y Micro-credenciales:** Reconocimiento creciente de bootcamps, proyectos de código abierto y certificaciones internacionales.
-3. **Consolidación del Nearshoring en el Cono Sur:** Mayor contratación de talento latinoamericano por empresas globales gracias a la calidad técnica y la zona horaria.
-4. **Urgencia en Políticas de *Upskilling* y *Reskilling*:** Reconversión acelerada de trabajadores desplazados por la automatización hacia actividades de servicios tecnológicos y sostenibles.
-
----
-
-## 5. Instrucciones de Ejecución de la API
-
-### A. Levantar el servidor FastAPI
-Desde la terminal en el directorio del proyecto:
 ```powershell
+# Iniciar la API localmente
 uvicorn main:app --reload --port 8000
 ```
-
-### B. Endpoints de Ingesta, Procesamiento y Descarga
 * **Swagger UI:** `http://127.0.0.1:8000/docs`
-* **Procesar Uruguay:** `GET /api/v1/paises/URY/procesar`
-* **Descargar CSV Uruguay:** `GET /api/v1/paises/URY/descargar`
-* **Procesar Chile:** `GET /api/v1/paises/CHL/procesar`
-* **Descargar CSV Chile:** `GET /api/v1/paises/CHL/descargar`
-* **Procesar Argentina:** `GET /api/v1/paises/ARG/procesar`
-* **Descargar CSV Argentina:** `GET /api/v1/paises/ARG/descargar`
-* **Procesar Consolidado Regional (3 países):** `GET /api/v1/consolidado/procesar`
-* **Descargar Consolidado CSV:** `GET /api/v1/consolidado/descargar`
+* **Descargar CSV Ocupaciones (5 sectores / 20 ocupaciones):** `GET /api/v1/ocupaciones/descargar`
+* **Descargar CSV Consolidado Regional:** `GET /api/v1/consolidado/descargar`
