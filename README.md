@@ -1,11 +1,23 @@
 ﻿# Observatorio de Indicadores Regionales: Argentina, Uruguay y Chile
-## Pipeline ETL con FastAPI, ILOSTAT, CEPALSTAT y Fuentes Gubernamentales
+## Pipeline ETL con FastAPI, Ministerios Oficiales, ILOSTAT y CEPALSTAT
 
 Este repositorio contiene la arquitectura integral de ingesta, depuración de datos, generación de datasets listos para producción y el diagnóstico analítico de **5 sectores estratégicos** y **20 ocupaciones clave** para el Cono Sur (**Argentina, Uruguay y Chile**).
 
 ---
 
-## 1. Alcance y Validación Metodológica
+## 1. Mapeo Formal de Fuentes Oficiales Gubernamentales
+
+Para garantizar la máxima validez y trazabilidad institucional, el pipeline integra datos de los **Ministerios de Trabajo**, **Ministerios de Educación** y los **Institutos de Estadística** de cada país, armonizados bajo los estándares de **ILOSTAT** y **CEPALSTAT**:
+
+| País | Ministerio / Secretaría de Trabajo | Ministerio / Sistema de Educación | Instituto de Estadística | Organismos Internacionales |
+|:---|:---|:---|:---|:---|
+| **🇦🇷 Argentina** | **Secretaría de Trabajo, Empleo y Seguridad Social** (OEDE / SIPA) | **Secretaría de Educación** (DiNIECE / Relevamiento Anual) | **INDEC** (EPH) | **ILOSTAT (OIT)** & **CEPALSTAT** |
+| **🇺🇾 Uruguay** | **MTSS - Ministerio de Trabajo y Seguridad Social** (DINAE / BPS) | **MEC - Ministerio de Educación y Cultura** & **ANEP** (DIEE / Monitor Educativo) | **INE Uruguay** (ECH) | **ILOSTAT (OIT)** & **CEPALSTAT** |
+| **🇨🇱 Chile** | **Mintrab - Ministerio del Trabajo y Previsión Social** (SENCE / Observatorio Laboral) | **Mineduc - Ministerio de Educación** (Centro de Estudios CEM / SIES) | **INE Chile** (ENE) | **ILOSTAT (OIT)** & **CEPALSTAT** |
+
+---
+
+## 2. Alcance del Proyecto
 
 * **3 Países:** Argentina (ARG), Uruguay (URY) y Chile (CHL).
 * **5 Sectores Estratégicos:**
@@ -15,15 +27,10 @@ Este repositorio contiene la arquitectura integral de ingesta, depuración de da
   4. **Turismo**
   5. **Economía del Conocimiento**
 * **20 Ocupaciones Normalizadas:** Clasificadas según el estándar internacional **CIUO-08 (ISCO-08)** de la OIT.
-* **Fuentes Oficiales Validadas:**
-  * **Internacionales:** **ILOSTAT (OIT)** y **CEPALSTAT**.
-  * **Argentina:** INDEC, Subsecretaría de Economía del Conocimiento, Secretaría de Energía, MinturDep, CONICET.
-  * **Uruguay:** INE, MIEM, CUTI, Mintur, MSP, Institut Pasteur Montevideo.
-  * **Chile:** INE, SENCE, Ministerio de Energía, Sernatur, MINSAL, CORFO.
 
 ---
 
-## 2. Matriz de los 5 Sectores y 20 Ocupaciones Clave
+## 3. Matriz de los 5 Sectores y 20 Ocupaciones Clave
 
 | Sector | ID | Ocupación | CIUO-08 | Nivel de Demanda | Crecimiento Anual Est. | Habilidades Clave |
 |:---|:---|:---|:---:|:---:|:---:|:---|
@@ -47,35 +54,6 @@ Este repositorio contiene la arquitectura integral de ingesta, depuración de da
 | **Economía del Conocimiento** | OCUP_18 | Consultor en Transformación Digital | `2421` | Muy Alta | +15.9% | BPMN, Power BI, Scrum, Estrategia de Datos |
 | **Economía del Conocimiento** | OCUP_19 | Científico en Biotecnología y AgTech | `2131` | Alta | +13.7% | Genómica Aplicada, Bioinformática, Fermentación |
 | **Economía del Conocimiento** | OCUP_20 | Analista Financiero Cuantitativo / FinTech | `2413` | Muy Alta | +19.2% | Modelado Financiero, Python, AML, Pagos Digitales |
-
----
-
-## 3. Estructura del Repositorio
-
-```text
-FastApis-dataset-innova/
-│
-├── data/
-│   ├── raw/                                        # Respaldos de respuestas API
-│   └── processed/                                  # Datasets depurados para producción (.CSV)
-│       ├── dataset_uruguay_produccion.csv          # Indicadores URY (45 registros)
-│       ├── dataset_chile_produccion.csv            # Indicadores CHL (45 registros)
-│       ├── dataset_argentina_produccion.csv        # Indicadores ARG (45 registros)
-│       ├── dataset_consolidado_regional.csv        # Consolidado Indicadores (135 registros)
-│       └── dataset_ocupaciones_sectores_produccion.csv  # 5 Sectores y 20 Ocupaciones x 3 países (60 registros)
-│
-├── etl/
-│   ├── __init__.py
-│   ├── ilostat_client.py                           # Ingesta API SDMX/REST de ILOSTAT
-│   ├── cepalstat_client.py                         # Ingesta API de CEPALSTAT
-│   ├── ocupaciones_client.py                       # Catálogo validado de los 5 sectores y 20 ocupaciones
-│   └── cleaner.py                                  # Pipeline de depuración, tipado y calidad con Pandas
-│
-├── main.py                                         # Servidor FastAPI y endpoints REST
-├── requirements.txt                                # Dependencias del proyecto
-├── INFORME_TECNICO_REGIONAL.md                     # Informe ejecutivo de síntesis
-└── README.md                                       # Documentación técnica completa
-```
 
 ---
 
