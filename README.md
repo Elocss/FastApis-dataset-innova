@@ -1,4 +1,4 @@
-﻿# Observatorio de Indicadores Regionales: Argentina, Uruguay y Chile
+# Observatorio de Indicadores Regionales: Argentina, Uruguay y Chile
 ## Pipeline ETL con FastAPI, Ministerios Oficiales, ILOSTAT y CEPALSTAT
 
 Este repositorio contiene la arquitectura integral de ingesta, depuración de datos, generación de datasets listos para producción y el diagnóstico analítico de **5 sectores estratégicos** y **20 ocupaciones clave** para el Cono Sur (**Argentina, Uruguay y Chile**).
@@ -85,12 +85,20 @@ Interconexión de plataformas vía APIs directas (FastAPI a Power BI), auge de m
 
 ---
 
-## 5. Instrucciones de Ejecución
+## 5. Informes Técnicos y de Homologación
+
+* **[Informe de Mapeo de Variables Equivalentes (ARG, CHL, URY)](INFORME_MAPEO_VARIABLES_REGIONAL.md)**: Homologación metodológica de indicadores socioeconómicos, fuentes (INDEC, INE Chile, INE Uruguay, OIT, CEPAL) y equivalencias CIUO-08.
+* **[Informe Técnico y Comparativo Regional](INFORME_TECNICO_REGIONAL.md)**: Síntesis macroeconómica comparada y análisis por país.
+
+---
+
+## 6. Instrucciones de Ejecución
 
 ```powershell
-# Iniciar la API localmente
-uvicorn main:app --reload --port 8000
+# Activar entorno e iniciar la API
+.\.venv\Scripts\python.exe -m uvicorn main:app --reload --port 8000
 ```
 * **Swagger UI:** `http://127.0.0.1:8000/docs`
 * **Descargar CSV Ocupaciones (5 sectores / 20 ocupaciones):** `GET /api/v1/ocupaciones/descargar`
 * **Descargar CSV Consolidado Regional:** `GET /api/v1/consolidado/descargar`
+
