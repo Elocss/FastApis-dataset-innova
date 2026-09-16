@@ -1,6 +1,6 @@
-﻿import httpx
+import httpx
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 # Mapeo de países objetivo
 PAISES_INFO = {
@@ -58,12 +58,14 @@ HISTORICO_OIT_VALIDADO = {
 async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
     """
     Consume la API SDMX REST oficial de ILOSTAT para el país indicado.
-    Si la API tiene latencia o bloqueo de red, utiliza la serie homologada OIT.
+    Completa los años que falten con la serie homologada OIT de respaldo.
     """
     pais_iso = pais_iso.upper()
     info_pais = PAISES_INFO.get(pais_iso, {"nombre": pais_iso, "iso3": pais_iso})
     pais_nombre = info_pais["nombre"]
     registros = []
+    anios_desempleo_obtenidos = set()
+    fecha_extraccion = datetime.now().strftime("%Y-%m-%d")
     
     # 1. Intento de extracción en vivo por API SDMX REST (Desempleo)
     url_sdmx = f"https://sdmx.ilo.org/rest/data/ILO,DF_UNE_2EAP_SEX_AGE_RT/{pais_iso}..SEX_T.AGE_AGGREGATE_TOTAL?startPeriod=2015&endPeriod=2024&format=jsondata"
@@ -84,24 +86,30 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                     idx = int(time_idx)
                     anio = time_periods[idx] if idx < len(time_periods) else None
                     if anio and val_arr:
+                        anio = int(anio)
+                        if anio in anios_desempleo_obtenidos:
+                            continue
+                        anios_desempleo_obtenidos.add(anio)
                         registros.append({
                             "pais_codigo_iso3": pais_iso,
                             "pais_nombre": pais_nombre,
                             "dimension": "Empleo",
                             "indicador_nombre": "Tasa de Desocupación Total (% Fuerza de Trabajo)",
-                            "anio": int(anio),
+                            "anio": anio,
                             "periodo": "Anual",
                             "valor": round(float(val_arr[0]), 2),
                             "unidad_medida": "Porcentaje (%)",
                             "fuente_oficial": "ILOSTAT - OIT (API SDMX)",
-                            "fecha_extraccion": datetime.now().strftime("%Y-%m-%d")
+                            "fecha_extraccion": fecha_extraccion
                         })
     except Exception as e:
         print(f"[{pais_iso}] Advertencia al conectar con ILOSTAT API: {e}")
 
-    # 2. Si no se obtuvieron registros o faltan indicadores clave, completamos con la serie completa validada
-    if not registros and pais_iso in HISTORICO_OIT_VALIDADO:
+    # 2. Completar únicamente los años ausentes con la serie validada
+    if pais_iso in HISTORICO_OIT_VALIDADO:
         for anio, val in HISTORICO_OIT_VALIDADO[pais_iso]["desempleo"]:
+            if anio in anios_desempleo_obtenidos:
+                continue
             registros.append({
                 "pais_codigo_iso3": pais_iso,
                 "pais_nombre": pais_nombre,
@@ -112,7 +120,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                 "valor": val,
                 "unidad_medida": "Porcentaje (%)",
                 "fuente_oficial": "ILOSTAT - OIT",
-                "fecha_extraccion": datetime.now().strftime("%Y-%m-%d")
+                "fecha_extraccion": fecha_extraccion
             })
             
     # Añadimos Tasa de Ocupación e Índice de Salarios
@@ -128,7 +136,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                 "valor": val,
                 "unidad_medida": "Porcentaje (%)",
                 "fuente_oficial": "ILOSTAT - OIT",
-                "fecha_extraccion": datetime.now().strftime("%Y-%m-%d")
+                "fecha_extraccion": fecha_extraccion
             })
         for anio, val in HISTORICO_OIT_VALIDADO[pais_iso]["salario_real_indice"]:
             registros.append({
@@ -141,7 +149,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                 "valor": val,
                 "unidad_medida": "Índice (Base 100)",
                 "fuente_oficial": "ILOSTAT - OIT",
-                "fecha_extraccion": datetime.now().strftime("%Y-%m-%d")
+                "fecha_extraccion": fecha_extraccion
             })
 
     return registros

@@ -1,4 +1,4 @@
-﻿import pandas as pd
+import pandas as pd
 import os
 from typing import List, Dict
 
@@ -36,8 +36,11 @@ def depurar_y_estructurar(datos: List[Dict]) -> pd.DataFrame:
             
     df = df[ESQUEMA_COLUMNAS]
     
-    # 2. Eliminación de duplicados
-    df = df.drop_duplicates(subset=["pais_codigo_iso3", "dimension", "indicador_nombre", "anio"])
+    # 2. Eliminar solo duplicados de la misma medida y procedencia
+    df = df.drop_duplicates(subset=[
+        "pais_codigo_iso3", "dimension", "indicador_nombre", "anio",
+        "periodo", "unidad_medida", "fuente_oficial"
+    ])
     
     # 3. Tratamiento de nulos en llaves y valores
     df = df.dropna(subset=["pais_codigo_iso3", "indicador_nombre", "anio", "valor"])
