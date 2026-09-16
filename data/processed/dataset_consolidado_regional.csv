@@ -1,0 +1,136 @@
+﻿pais_codigo_iso3,pais_nombre,dimension,indicador_nombre,anio,periodo,valor,unidad_medida,fuente_oficial,fecha_extraccion
+ARG,Argentina,Economía,Inflación Anual (IPC acumulado),2021,Anual,50.9,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Inflación Anual (IPC acumulado),2022,Anual,94.8,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Inflación Anual (IPC acumulado),2023,Anual,211.4,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Inflación Anual (IPC acumulado),2024,Anual,118.0,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Variación Anual del PIB Real,2018,Anual,-2.6,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Variación Anual del PIB Real,2019,Anual,-2.0,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Variación Anual del PIB Real,2020,Anual,-9.9,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Variación Anual del PIB Real,2021,Anual,10.7,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Variación Anual del PIB Real,2022,Anual,5.0,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Variación Anual del PIB Real,2023,Anual,-1.6,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Economía,Variación Anual del PIB Real,2024,Anual,-3.5,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Educación,Gasto Público en Educación (% del PIB),2022,Anual,4.8,% del PIB,CEPALSTAT,2026-09-10
+ARG,Argentina,Educación,Gasto Público en Educación (% del PIB),2023,Anual,4.5,% del PIB,CEPALSTAT,2026-09-10
+ARG,Argentina,Educación,Tasa de Finalización de Educación Secundaria,2020,Anual,68.2,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Educación,Tasa de Finalización de Educación Secundaria,2021,Anual,69.1,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Educación,Tasa de Finalización de Educación Secundaria,2022,Anual,70.0,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Educación,Tasa de Finalización de Educación Secundaria,2023,Anual,70.8,Porcentaje (%),CEPALSTAT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2015,Anual,6.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2016,Anual,8.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2017,Anual,8.3,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2018,Anual,9.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2019,Anual,9.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2020,Anual,11.4,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2021,Anual,8.7,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2022,Anual,6.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2023,Anual,6.1,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2024,Anual,7.6,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Ocupación / Empleo,2018,Anual,42.6,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Ocupación / Empleo,2019,Anual,42.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Ocupación / Empleo,2020,Anual,37.4,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Ocupación / Empleo,2021,Anual,42.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Ocupación / Empleo,2022,Anual,44.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Ocupación / Empleo,2023,Anual,44.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Empleo,Tasa de Ocupación / Empleo,2024,Anual,43.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Población,Población Total,2018,Anual,44.5,Millones de hab.,CEPALSTAT,2026-09-10
+ARG,Argentina,Población,Población Total,2020,Anual,45.4,Millones de hab.,CEPALSTAT,2026-09-10
+ARG,Argentina,Población,Población Total,2022,Anual,46.0,Millones de hab.,CEPALSTAT,2026-09-10
+ARG,Argentina,Población,Población Total,2024,Anual,46.7,Millones de hab.,CEPALSTAT,2026-09-10
+ARG,Argentina,Salarios,Índice de Salario Medio Real (Base 2018=100),2018,Anual,100.0,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Salarios,Índice de Salario Medio Real (Base 2018=100),2019,Anual,92.4,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Salarios,Índice de Salario Medio Real (Base 2018=100),2020,Anual,89.8,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Salarios,Índice de Salario Medio Real (Base 2018=100),2021,Anual,88.5,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Salarios,Índice de Salario Medio Real (Base 2018=100),2022,Anual,87.9,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Salarios,Índice de Salario Medio Real (Base 2018=100),2023,Anual,84.2,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+ARG,Argentina,Salarios,Índice de Salario Medio Real (Base 2018=100),2024,Anual,78.5,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Economía,Inflación Anual (IPC acumulado),2021,Anual,7.2,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Inflación Anual (IPC acumulado),2022,Anual,12.8,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Inflación Anual (IPC acumulado),2023,Anual,3.9,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Inflación Anual (IPC acumulado),2024,Anual,4.2,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Variación Anual del PIB Real,2018,Anual,4.0,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Variación Anual del PIB Real,2019,Anual,0.8,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Variación Anual del PIB Real,2020,Anual,-6.1,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Variación Anual del PIB Real,2021,Anual,11.7,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Variación Anual del PIB Real,2022,Anual,2.4,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Variación Anual del PIB Real,2023,Anual,0.2,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Economía,Variación Anual del PIB Real,2024,Anual,2.3,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Educación,Gasto Público en Educación (% del PIB),2022,Anual,5.4,% del PIB,CEPALSTAT,2026-09-10
+CHL,Chile,Educación,Gasto Público en Educación (% del PIB),2023,Anual,5.3,% del PIB,CEPALSTAT,2026-09-10
+CHL,Chile,Educación,Tasa de Finalización de Educación Secundaria,2020,Anual,87.5,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Educación,Tasa de Finalización de Educación Secundaria,2021,Anual,88.0,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Educación,Tasa de Finalización de Educación Secundaria,2022,Anual,88.5,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Educación,Tasa de Finalización de Educación Secundaria,2023,Anual,89.1,Porcentaje (%),CEPALSTAT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2015,Anual,6.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2016,Anual,6.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2017,Anual,6.7,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2018,Anual,7.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2019,Anual,7.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2020,Anual,10.7,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2021,Anual,8.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2022,Anual,7.9,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2023,Anual,8.7,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2024,Anual,8.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Ocupación / Empleo,2018,Anual,58.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Ocupación / Empleo,2019,Anual,58.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Ocupación / Empleo,2020,Anual,50.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Ocupación / Empleo,2021,Anual,53.6,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Ocupación / Empleo,2022,Anual,55.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Ocupación / Empleo,2023,Anual,56.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Empleo,Tasa de Ocupación / Empleo,2024,Anual,56.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Población,Población Total,2018,Anual,18.7,Millones de hab.,CEPALSTAT,2026-09-10
+CHL,Chile,Población,Población Total,2020,Anual,19.1,Millones de hab.,CEPALSTAT,2026-09-10
+CHL,Chile,Población,Población Total,2022,Anual,19.5,Millones de hab.,CEPALSTAT,2026-09-10
+CHL,Chile,Población,Población Total,2024,Anual,19.8,Millones de hab.,CEPALSTAT,2026-09-10
+CHL,Chile,Salarios,Índice de Salario Medio Real (Base 2018=100),2018,Anual,100.0,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Salarios,Índice de Salario Medio Real (Base 2018=100),2019,Anual,101.8,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Salarios,Índice de Salario Medio Real (Base 2018=100),2020,Anual,102.3,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Salarios,Índice de Salario Medio Real (Base 2018=100),2021,Anual,103.5,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Salarios,Índice de Salario Medio Real (Base 2018=100),2022,Anual,100.2,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Salarios,Índice de Salario Medio Real (Base 2018=100),2023,Anual,102.8,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+CHL,Chile,Salarios,Índice de Salario Medio Real (Base 2018=100),2024,Anual,105.1,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Economía,Inflación Anual (IPC acumulado),2021,Anual,7.96,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Inflación Anual (IPC acumulado),2022,Anual,8.29,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Inflación Anual (IPC acumulado),2023,Anual,5.11,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Inflación Anual (IPC acumulado),2024,Anual,4.8,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Variación Anual del PIB Real,2018,Anual,0.5,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Variación Anual del PIB Real,2019,Anual,0.4,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Variación Anual del PIB Real,2020,Anual,-6.1,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Variación Anual del PIB Real,2021,Anual,4.4,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Variación Anual del PIB Real,2022,Anual,4.9,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Variación Anual del PIB Real,2023,Anual,0.4,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Economía,Variación Anual del PIB Real,2024,Anual,3.2,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Educación,Gasto Público en Educación (% del PIB),2022,Anual,4.6,% del PIB,CEPALSTAT,2026-09-10
+URY,Uruguay,Educación,Gasto Público en Educación (% del PIB),2023,Anual,4.7,% del PIB,CEPALSTAT,2026-09-10
+URY,Uruguay,Educación,Tasa de Finalización de Educación Secundaria,2020,Anual,42.1,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Educación,Tasa de Finalización de Educación Secundaria,2021,Anual,43.8,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Educación,Tasa de Finalización de Educación Secundaria,2022,Anual,45.2,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Educación,Tasa de Finalización de Educación Secundaria,2023,Anual,47.0,Porcentaje (%),CEPALSTAT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2015,Anual,7.5,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2016,Anual,7.8,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2017,Anual,7.9,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2018,Anual,8.3,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2019,Anual,8.9,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2020,Anual,10.3,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2021,Anual,9.3,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2022,Anual,7.9,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2023,Anual,8.3,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Desocupación Total (% Fuerza de Trabajo),2024,Anual,8.1,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Ocupación / Empleo,2018,Anual,56.4,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Ocupación / Empleo,2019,Anual,56.0,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Ocupación / Empleo,2020,Anual,53.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Ocupación / Empleo,2021,Anual,55.4,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Ocupación / Empleo,2022,Anual,57.1,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Ocupación / Empleo,2023,Anual,58.2,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Empleo,Tasa de Ocupación / Empleo,2024,Anual,58.6,Porcentaje (%),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Población,Población Total,2018,Anual,3.45,Millones de hab.,CEPALSTAT,2026-09-10
+URY,Uruguay,Población,Población Total,2020,Anual,3.47,Millones de hab.,CEPALSTAT,2026-09-10
+URY,Uruguay,Población,Población Total,2022,Anual,3.49,Millones de hab.,CEPALSTAT,2026-09-10
+URY,Uruguay,Población,Población Total,2024,Anual,3.51,Millones de hab.,CEPALSTAT,2026-09-10
+URY,Uruguay,Salarios,Índice de Salario Medio Real (Base 2018=100),2018,Anual,100.0,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Salarios,Índice de Salario Medio Real (Base 2018=100),2019,Anual,101.5,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Salarios,Índice de Salario Medio Real (Base 2018=100),2020,Anual,99.8,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Salarios,Índice de Salario Medio Real (Base 2018=100),2021,Anual,98.2,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Salarios,Índice de Salario Medio Real (Base 2018=100),2022,Anual,97.6,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Salarios,Índice de Salario Medio Real (Base 2018=100),2023,Anual,101.4,Índice (Base 100),ILOSTAT - OIT,2026-09-10
+URY,Uruguay,Salarios,Índice de Salario Medio Real (Base 2018=100),2024,Anual,103.2,Índice (Base 100),ILOSTAT - OIT,2026-09-10
