@@ -1,32 +1,34 @@
-﻿# Observatorio de Indicadores Regionales: Argentina, Uruguay y Chile
-## Pipeline ETL con FastAPI, Ministerios Oficiales, ILOSTAT y CEPALSTAT
+# Observatorio de Indicadores Regionales: Argentina, Uruguay y Chile
+## Pipeline de datos con FastAPI, ILOSTAT y CEPALSTAT
 
-Este repositorio contiene la arquitectura integral de ingesta, depuración de datos, generación de datasets listos para producción y el diagnóstico analítico de **5 sectores estratégicos** y **20 ocupaciones clave** para el Cono Sur (**Argentina, Uruguay y Chile**).
+Este repositorio contiene una API FastAPI para generar datasets regionales, depurar indicadores socioeconómicos y consultar un catálogo de **5 sectores estratégicos** y **20 ocupaciones clave** para el Cono Sur (**Argentina, Uruguay y Chile**).
+
+### Estado actual de las fuentes
+
+* **ILOSTAT:** se intenta consultar la API SDMX para la tasa de desocupación. Si la consulta falla o no devuelve datos, se utiliza una serie histórica local de respaldo.
+* **CEPALSTAT:** los indicadores se generan desde un repositorio local homologado incluido en el código; actualmente no hay una consulta HTTP a CEPALSTAT.
+* **Ocupaciones:** el catálogo de 20 ocupaciones y sus metadatos se encuentra definido localmente en `etl/ocupaciones_client.py`.
+* Las instituciones nacionales mencionadas más adelante son fuentes de referencia del análisis, no conectores implementados por este repositorio.
 
 ---
 
 ## 1. Mapeo Formal de Fuentes Oficiales Gubernamentales
 
-Para garantizar la máxima validez y trazabilidad institucional, el pipeline integra datos de los **Ministerios de Trabajo**, **Ministerios de Educación** y los **Institutos de Estadística** de cada país, armonizados bajo los estándares de **ILOSTAT** y **CEPALSTAT**:
+Las instituciones nacionales indicadas en esta sección son fuentes de referencia para la selección y contextualización de indicadores. La implementación actual consume ILOSTAT parcialmente y utiliza repositorios locales para CEPALSTAT y ocupaciones; no incluye conectores directos a cada organismo nacional.
 
 | País | Ministerio / Secretaría de Trabajo | Ministerio / Sistema de Educación | Instituto de Estadística | Organismos Internacionales |
 |:---|:---|:---|:---|:---|
-| **🇦🇷 Argentina** | **Secretaría de Trabajo, Empleo y Seguridad Social** (OEDE / SIPA) | **Secretaría de Educación** (DiNIECE / Relevamiento Anual) | **INDEC** (EPH) | **ILOSTAT (OIT)** & **CEPALSTAT** |
-| **🇺🇾 Uruguay** | **MTSS - Ministerio de Trabajo y Seguridad Social** (DINAE / BPS) | **MEC - Ministerio de Educación y Cultura** & **ANEP** (DIEE / Monitor Educativo) | **INE Uruguay** (ECH) | **ILOSTAT (OIT)** & **CEPALSTAT** |
-| **🇨🇱 Chile** | **Mintrab - Ministerio del Trabajo y Previsión Social** (SENCE / Observatorio Laboral) | **Mineduc - Ministerio de Educación** (Centro de Estudios CEM / SIES) | **INE Chile** (ENE) | **ILOSTAT (OIT)** & **CEPALSTAT** |
+| **Argentina** | **Secretaría de Trabajo, Empleo y Seguridad Social** (OEDE / SIPA) | **Secretaría de Educación** (DiNIECE / Relevamiento Anual) | **INDEC** (EPH) | **ILOSTAT (OIT)** y **CEPALSTAT** |
+| **Uruguay** | **MTSS - Ministerio de Trabajo y Seguridad Social** (DINAE / BPS) | **MEC - Ministerio de Educación y Cultura** y **ANEP** (DIEE / Monitor Educativo) | **INE Uruguay** (ECH) | **ILOSTAT (OIT)** y **CEPALSTAT** |
+| **Chile** | **Mintrab - Ministerio del Trabajo y Previsión Social** (SENCE / Observatorio Laboral) | **Mineduc - Ministerio de Educación** (Centro de Estudios CEM / SIES) | **INE Chile** (ENE) | **ILOSTAT (OIT)** y **CEPALSTAT** |
 
 ---
 
 ## 2. Alcance del Proyecto
 
 * **3 Países:** Argentina (ARG), Uruguay (URY) y Chile (CHL).
-* **5 Sectores Estratégicos:**
-  1. **Tecnología**
-  2. **Salud**
-  3. **Energía**
-  4. **Turismo**
-  5. **Economía del Conocimiento**
-* **20 Ocupaciones Normalizadas:** Clasificadas según el estándar internacional **CIUO-08 (ISCO-08)** de la OIT.
+* **5 Sectores Estratégicos:** Tecnología, Salud, Energía, Turismo y Economía del Conocimiento.
+* **20 Ocupaciones Normalizadas:** clasificadas según el estándar internacional **CIUO-08 (ISCO-08)** de la OIT.
 
 ---
 
@@ -59,38 +61,69 @@ Para garantizar la máxima validez y trazabilidad institucional, el pipeline int
 
 ## 4. Preguntas Estratégicas y Diagnóstico del Mercado Laboral
 
+Las conclusiones de esta sección son un diagnóstico interpretativo y no se calculan automáticamente desde la API. Para convertirlas en resultados reproducibles sería necesario documentar las fuentes, consultas y metodología de cada análisis.
+
 ### 1. ¿Qué sectores están creciendo o disminuyendo?
-* **🟢 Crecimiento Acelerado:** Tecnología y Servicios Basados en el Conocimiento (SBC), Energías Renovables / Minería de Transición (Litio/Cobre) y TravelTech/Logística.
-* **🟡 Estables / En Transformación:** Agroindustria / AgTech (menor mano de obra manual, mayor demanda técnica) y Servicios de Salud/Cuidado.
-* **🔴 En Contracción Relativa:** Manufactura tradicional no automatizada, comercio minorista tradicional y tareas administrativas burocráticas repetitivas.
+* **Crecimiento acelerado:** Tecnología y Servicios Basados en el Conocimiento (SBC), Energías Renovables / Minería de Transición (Litio/Cobre) y TravelTech/Logística.
+* **Estables / En transformación:** Agroindustria / AgTech y Servicios de Salud/Cuidado.
+* **En contracción relativa:** Manufactura tradicional no automatizada, comercio minorista tradicional y tareas administrativas repetitivas.
 
 ### 2. ¿Qué ocupaciones presentan mayores oportunidades de empleo?
 Ingenieros de Datos / IA, Desarrolladores Full-Stack, Arquitectos Cloud, Ingenieros en Energías Renovables, Consultores de Transformación Digital y Enfermeros/as de Cuidados Críticos.
 
 ### 3. ¿Qué habilidades están aumentando su demanda?
 * **Duras:** Python, FastAPI, modelado dimensional, DAX / Power BI, arquitecturas Cloud, integración de APIs de IA (LLMs) e inglés avanzado.
-* **Blandas:** Pensamiento crítico, resolución de problemas complejos, adaptabilidad (*learnability*) y trabajo asíncrono.
+* **Blandas:** Pensamiento crítico, resolución de problemas complejos, adaptabilidad y trabajo asíncrono.
 
 ### 4. ¿Cómo evolucionan los salarios y la cantidad de puestos?
-Polarización del mercado laboral: alta prima salarial e ingresos dolarizados para talento tecnológico y de conocimiento; presión sobre puestos de tareas repetitivas frente a la automatización.
+El dataset incluye un índice de salario real de referencia para los países, pero no calcula salarios dolarizados ni cantidad de puestos por ocupación. Esas conclusiones requieren fuentes y análisis adicionales.
 
 ### 5. ¿Existe correspondencia entre la formación disponible y las necesidades del mercado?
-Existe un **desacople estructural (*skills mismatch*)**. Las ofertas formativas tradicionales tardan en actualizarse, mientras el mercado exige habilidades prácticas y certificaciones ágiles. La culminación secundaria en Uruguay (47.0%) y la deserción universitaria en Argentina son cuellos de botella clave.
+El informe plantea un desacople estructural (*skills mismatch*). Esta conclusión debe interpretarse como análisis cualitativo, ya que la API no compara ofertas formativas con vacantes laborales.
 
 ### 6. ¿Qué nuevas brechas de habilidades (*skills gaps*) están apareciendo?
-Brecha de alfabetización en Inteligencia Artificial (*AI Literacy Gap*), falta de cultura de datos en mandos medios (*data-driven gap*) y demanda de seniority práctico frente al conocimiento puramente teórico.
+Se identifican como hipótesis de análisis la brecha de alfabetización en Inteligencia Artificial, la falta de cultura de datos en mandos medios y la demanda de experiencia práctica.
 
 ### 7. ¿Qué tendencias pueden anticiparse?
-Interconexión de plataformas vía APIs directas (FastAPI a Power BI), auge de micro-credenciales y bootcamps, y consolidación del Cono Sur como polo preferencial de *nearshoring* para mercados globales.
+El análisis plantea la interconexión de plataformas vía APIs, el auge de microcredenciales y la consolidación del Cono Sur como polo de *nearshoring*. Estas tendencias no son predicciones calculadas por el pipeline.
 
 ---
 
 ## 5. Instrucciones de Ejecución
 
+### Instalación
+
 ```powershell
-# Iniciar la API localmente
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### Inicio de la API
+
+```powershell
 uvicorn main:app --reload --port 8000
 ```
+
 * **Swagger UI:** `http://127.0.0.1:8000/docs`
-* **Descargar CSV Ocupaciones (5 sectores / 20 ocupaciones):** `GET /api/v1/ocupaciones/descargar`
-* **Descargar CSV Consolidado Regional:** `GET /api/v1/consolidado/descargar`
+
+### Endpoints principales
+
+* **Procesar y descargar indicadores de un país:**
+  * `GET /api/v1/paises/{pais}/procesar`
+  * `GET /api/v1/paises/{pais}/descargar`
+* **Procesar y descargar el consolidado regional:**
+  * `GET /api/v1/consolidado/procesar`
+  * `GET /api/v1/consolidado/descargar`
+* **Generar y descargar ocupaciones:**
+  * `GET /api/v1/ocupaciones/procesar`
+  * `GET /api/v1/ocupaciones/descargar`
+* **Consultar el catálogo de ocupaciones:** `GET /api/v1/ocupaciones/catalogo`
+
+En los endpoints de país, `{pais}` debe ser `ARG`, `URY` o `CHL`. El catálogo acepta los filtros opcionales `sector` y `pais`.
+
+### Limitaciones y reproducibilidad
+
+Los datasets de indicadores pueden variar según la respuesta de ILOSTAT. La tasa de desocupación puede provenir de la API o del respaldo local, mientras que los demás indicadores proceden de repositorios locales. Por ello, las cantidades de registros indicadas en el informe técnico son una referencia de la ejecución con el respaldo completo, no una garantía para todas las ejecuciones.
+
+El campo `fecha_extraccion` se genera en cada ejecución y los archivos de `data/processed/` son productos generados, no una copia necesariamente actualizada de las fuentes.
