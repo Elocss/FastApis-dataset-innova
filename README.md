@@ -21,6 +21,10 @@ El archivo [INFORME_MAPEO_VARIABLES_REGIONAL.md](INFORME_MAPEO_VARIABLES_REGIONA
 
 Este informe define criterios de homologación y trazabilidad; no implica que el pipeline tenga conectores directos a todas las fuentes nacionales descritas.
 
+### Fixes y riesgos conocidos de la API
+
+El [informe de fixes de la API](INFORME_FIXES_API.md) registra las correcciones de caché, concurrencia, trazabilidad de fuentes y contrato de indicadores, además de los riesgos que quedan pendientes para una futura iteración.
+
 ---
 
 ## 1. Mapeo Formal de Fuentes Oficiales Gubernamentales
@@ -106,7 +110,7 @@ El análisis plantea la interconexión de plataformas vía APIs, el auge de micr
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\\.venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
 ```
 
