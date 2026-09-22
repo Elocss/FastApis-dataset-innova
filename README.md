@@ -10,6 +10,17 @@ Este repositorio contiene una API FastAPI para generar datasets regionales, depu
 * **Ocupaciones:** el catálogo de 20 ocupaciones y sus metadatos se encuentra definido localmente en `etl/ocupaciones_client.py`.
 * Las instituciones nacionales mencionadas más adelante son fuentes de referencia del análisis, no conectores implementados por este repositorio.
 
+### Documento de mapeo y homologación
+
+El archivo [INFORME_MAPEO_VARIABLES_REGIONAL.md](INFORME_MAPEO_VARIABLES_REGIONAL.md) documenta la capa metodológica que permite comparar los indicadores entre Argentina, Chile y Uruguay. Incluye:
+
+* la matriz de variables equivalentes, unidades y frecuencias;
+* las diferencias metodológicas de las encuestas laborales, el IPC y la finalización secundaria;
+* el mapeo de las 20 ocupaciones a CIUO-08 y sus equivalencias nacionales;
+* el esquema canónico de datos utilizado por el pipeline.
+
+Este informe define criterios de homologación y trazabilidad; no implica que el pipeline tenga conectores directos a todas las fuentes nacionales descritas.
+
 ---
 
 ## 1. Mapeo Formal de Fuentes Oficiales Gubernamentales
