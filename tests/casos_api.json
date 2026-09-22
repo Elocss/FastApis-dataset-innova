@@ -1,0 +1,146 @@
+{
+  "version": "1.0",
+  "api_base_url": "http://127.0.0.1:8000",
+  "casos": [
+    {
+      "id": "API-FUNC-001",
+      "tipo": "funcional",
+      "nombre": "Filtrar el catálogo por país y sector",
+      "objetivo": "Verificar que el endpoint de catálogo aplique simultáneamente los filtros sector y pais.",
+      "precondiciones": [
+        "La API está iniciada con uvicorn.",
+        "El código de país ARG y el sector Tecnología son valores soportados."
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/ocupaciones/catalogo?sector=Tecnolog%C3%ADa&pais=ARG",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "assertions": [
+        {
+          "type": "status_code",
+          "operator": "equals",
+          "value": 200
+        },
+        {
+          "type": "json_type",
+          "operator": "equals",
+          "value": "array"
+        },
+        {
+          "type": "json_length",
+          "operator": "equals",
+          "value": 4
+        },
+        {
+          "type": "every_item_field",
+          "field": "pais_codigo_iso3",
+          "operator": "equals",
+          "value": "ARG"
+        },
+        {
+          "type": "every_item_field",
+          "field": "sector",
+          "operator": "equals",
+          "value": "Tecnología"
+        },
+        {
+          "type": "every_item_has_fields",
+          "fields": [
+            "ocupacion_id",
+            "ocupacion_nombre",
+            "codigo_ciuo08_oit",
+            "nivel_demanda",
+            "habilidades_clave"
+          ]
+        }
+      ],
+      "resultado_esperado": "La respuesta contiene las cuatro ocupaciones de Tecnología para Argentina y ningún registro de otro país o sector."
+    },
+    {
+      "id": "API-INT-001",
+      "tipo": "integracion",
+      "nombre": "Procesar y descargar el consolidado regional",
+      "objetivo": "Verificar la integración entre los clientes ILOSTAT/CEPALSTAT, la depuración, la exportación CSV y los endpoints de descarga.",
+      "precondiciones": [
+        "La API está iniciada con uvicorn.",
+        "El directorio data/processed es escribible.",
+        "La prueba puede ejecutarse con acceso a ILOSTAT; si no está disponible, se utilizará el respaldo local implementado."
+      ],
+      "steps": [
+        {
+          "request": {
+            "method": "GET",
+            "path": "/api/v1/consolidado/procesar",
+            "headers": {
+              "Accept": "application/json"
+            }
+          },
+          "assertions": [
+            {
+              "type": "status_code",
+              "operator": "equals",
+              "value": 200
+            },
+            {
+              "type": "json_field",
+              "field": "status",
+              "operator": "equals",
+              "value": "Pipeline regional completado"
+            },
+            {
+              "type": "json_field_array_contains_all",
+              "field": "paises_procesados",
+              "values": [
+                "Argentina",
+                "Chile",
+                "Uruguay"
+              ]
+            },
+            {
+              "type": "json_field",
+              "field": "total_filas_consolidadas",
+              "operator": "greater_than",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "request": {
+            "method": "GET",
+            "path": "/api/v1/consolidado/descargar",
+            "headers": {
+              "Accept": "text/csv"
+            }
+          },
+          "assertions": [
+            {
+              "type": "status_code",
+              "operator": "equals",
+              "value": 200
+            },
+            {
+              "type": "header",
+              "name": "content-type",
+              "operator": "starts_with",
+              "value": "text/csv"
+            },
+            {
+              "type": "body_contains",
+              "value": "pais_codigo_iso3,pais_nombre,dimension,indicador_nombre"
+            }
+          ]
+        }
+      ],
+      "artifacts": [
+        "data/processed/dataset_consolidado_regional.csv",
+        "data/processed/dataset_argentina_produccion.csv",
+        "data/processed/dataset_chile_produccion.csv",
+        "data/processed/dataset_uruguay_produccion.csv"
+      ],
+      "resultado_esperado": "El pipeline procesa los tres países, genera el consolidado y devuelve un CSV con el esquema canónico."
+    }
+  ]
+}

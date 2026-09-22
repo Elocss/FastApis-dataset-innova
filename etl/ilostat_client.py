@@ -66,20 +66,20 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
     registros = []
     anios_desempleo_obtenidos = set()
     fecha_extraccion = datetime.now().strftime("%Y-%m-%d")
-    
+
     # 1. Intento de extracción en vivo por API SDMX REST (Desempleo)
     url_sdmx = f"https://sdmx.ilo.org/rest/data/ILO,DF_UNE_2EAP_SEX_AGE_RT/{pais_iso}..SEX_T.AGE_AGGREGATE_TOTAL?startPeriod=2015&endPeriod=2024&format=jsondata"
-    
+
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.get(url_sdmx, headers={"Accept": "application/json"})
-            
+
         if resp.status_code == 200:
             data = resp.json()
             series = data.get("data", {}).get("dataSets", [{}])[0].get("series", {})
             structure = data.get("data", {}).get("structure", {})
             time_periods = [p.get("id") for p in structure.get("dimensions", {}).get("observation", [{}])[0].get("values", [])]
-            
+
             for _, serie_val in series.items():
                 obs = serie_val.get("observations", {})
                 for time_idx, val_arr in obs.items():
@@ -94,7 +94,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                             "pais_codigo_iso3": pais_iso,
                             "pais_nombre": pais_nombre,
                             "dimension": "Empleo",
-                            "indicador_nombre": "Tasa de Desocupación Total (% Fuerza de Trabajo)",
+                            "indicador_nombre": "Tasa de Desocupación Total",
                             "anio": anio,
                             "periodo": "Anual",
                             "valor": round(float(val_arr[0]), 2),
@@ -114,7 +114,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                 "pais_codigo_iso3": pais_iso,
                 "pais_nombre": pais_nombre,
                 "dimension": "Empleo",
-                "indicador_nombre": "Tasa de Desocupación Total (% Fuerza de Trabajo)",
+                "indicador_nombre": "Tasa de Desocupación Total",
                 "anio": anio,
                 "periodo": "Anual",
                 "valor": val,
@@ -122,7 +122,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                 "fuente_oficial": "ILOSTAT - OIT",
                 "fecha_extraccion": fecha_extraccion
             })
-            
+
     # Añadimos Tasa de Ocupación e Índice de Salarios
     if pais_iso in HISTORICO_OIT_VALIDADO:
         for anio, val in HISTORICO_OIT_VALIDADO[pais_iso]["ocupacion"]:
@@ -130,7 +130,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                 "pais_codigo_iso3": pais_iso,
                 "pais_nombre": pais_nombre,
                 "dimension": "Empleo",
-                "indicador_nombre": "Tasa de Ocupación / Empleo",
+                "indicador_nombre": "Tasa de Ocupación",
                 "anio": anio,
                 "periodo": "Anual",
                 "valor": val,
@@ -143,7 +143,7 @@ async def fetch_ilostat_data(pais_iso: str) -> List[Dict]:
                 "pais_codigo_iso3": pais_iso,
                 "pais_nombre": pais_nombre,
                 "dimension": "Salarios",
-                "indicador_nombre": "Índice de Salario Medio Real (Base 2018=100)",
+                "indicador_nombre": "Índice de Salario Real",
                 "anio": anio,
                 "periodo": "Anual",
                 "valor": val,
