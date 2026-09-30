@@ -1,4 +1,4 @@
-﻿from fastapi import FastAPI, HTTPException, Path, Query
+from fastapi import FastAPI, HTTPException, Path, Query
 from fastapi.responses import FileResponse, JSONResponse
 import os
 import pandas as pd
@@ -9,6 +9,12 @@ from etl.ilostat_client import fetch_ilostat_data, PAISES_INFO
 from etl.cepalstat_client import fetch_cepalstat_data
 from etl.ocupaciones_client import obtener_dataset_ocupaciones_sectores, OCUPACIONES_SECTORES_REPOSITORIO
 from etl.cleaner import depurar_y_estructurar, exportar_csv
+from etl.analytics import (
+    DEFAULT_VARIABLES_CONFIG,
+    CustomWeightsRequest,
+    calcular_indice_sintetico_panel,
+    generar_resumen_ejecutivo_paises
+)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
@@ -185,3 +191,119 @@ def catalogo_ocupaciones(
         df = df[df["pais_codigo_iso3"].str.lower() == pais.strip().lower()]
         
     return df.to_dict(orient="records")
+
+# --------------------------------------------------------------------------
+# 4. ENDPOINTS: CÁLCULO DE ÍNDICE SINTÉTICO, DINÁMICA TEMPORAL Y TENDENCIAS
+# --------------------------------------------------------------------------
+@app.get("/api/v1/analytics/configuracion-ponderaciones", tags=["Analytics & Índices Sintéticos"])
+def obtener_configuracion_ponderaciones():
+    """
+    Retorna el modelo metodológico de variables, ponderaciones, dimensiones y polaridades
+    utilizadas para el cálculo del Índice de Desarrollo Económico-Laboral Regional.
+    """
+    return {
+        "indice_nombre": "Índice de Desarrollo Económico-Laboral Regional (IDELR)",
+        "metodologia": "Normalización Min-Max [0, 100] + Agregación Lineal Ponderada",
+        "variables_configuradas": DEFAULT_VARIABLES_CONFIG,
+        "restriccion_pesos": "La suma de ponderaciones equivale a 1.0 (100%)"
+    }
+
+@app.get("/api/v1/analytics/indice-sintetico", tags=["Analytics & Índices Sintéticos"])
+def consultar_indice_sintetico(
+    pais: Optional[str] = Query(None, description="Filtrar por código ISO3: ARG, CHL o URY"),
+    anio_inicio: Optional[int] = Query(2018, description="Año de inicio de la serie temporal (recomendado 2018)"),
+    anio_fin: Optional[int] = Query(2024, description="Año final de la serie temporal"),
+    tolerancia_epsilon: float = Query(1.0, description="Umbral de tolerancia (%) para clasificar ESTABILIDAD vs CRECIMIENTO/DISMINUCIÓN")
+):
+    """
+    Calcula de manera funcional el índice sintético y su evolución histórica,
+    identificando la tasa de variación interanual y la tendencia (Crecimiento, Estabilidad, Disminución).
+    """
+    df_res = calcular_indice_sintetico_panel(
+        epsilon=tolerancia_epsilon,
+        pais_filtro=pais,
+        anio_inicio=anio_inicio,
+        anio_fin=anio_fin
+    )
+    return {
+        "total_registros_calculados": len(df_res),
+        "parametros_aplicados": {
+            "pais_filtro": pais,
+            "periodo": f"{anio_inicio or 'Min'} - {anio_fin or 'Max'}",
+            "tolerancia_epsilon_pct": tolerancia_epsilon
+        },
+        "serie_historica": df_res.to_dict(orient="records")
+    }
+
+@app.post("/api/v1/analytics/indice-sintetico/custom", tags=["Analytics & Índices Sintéticos"])
+def calcular_indice_sintetico_personalizado(payload: CustomWeightsRequest):
+    """
+    Permite a los usuarios y dashboards definir dinámicamente un vector de variables y ponderaciones personalizadas.
+    """
+    custom_cfg = {}
+    for var in payload.variables:
+        custom_cfg[var.indicador_nombre] = {
+            "peso": var.peso,
+            "polaridad": var.polaridad or "positiva",
+            "min_teorico": var.min_teorico,
+            "max_teorico": var.max_teorico
+        }
+    
+    df_res = calcular_indice_sintetico_panel(
+        config=custom_cfg,
+        epsilon=payload.tolerancia_epsilon or 1.0,
+        pais_filtro=payload.pais,
+        anio_inicio=payload.anio_inicio,
+        anio_fin=payload.anio_fin
+    )
+    return {
+        "mensaje": "Índice personalizado calculado con éxito",
+        "variables_evaluadas": list(custom_cfg.keys()),
+        "serie_historica": df_res.to_dict(orient="records")
+    }
+
+@app.get("/api/v1/analytics/tendencias/resumen-ejecutivo", tags=["Analytics & Índices Sintéticos"])
+def resumen_ejecutivo_tendencias(
+    anio_inicio: Optional[int] = Query(2018, description="Año inicial para el análisis de tendencia"),
+    tolerancia_epsilon: float = Query(1.0, description="Umbral de estabilidad porcentual")
+):
+    """
+    Genera un diagnóstico comparativo por país con pendientes de regresión OLS,
+    variación acumulada total y estado actual de tendencia.
+    """
+    df_res = calcular_indice_sintetico_panel(
+        epsilon=tolerancia_epsilon,
+        anio_inicio=anio_inicio
+    )
+    resumen = generar_resumen_ejecutivo_paises(df_res)
+    return {
+        "titulo": "Diagnóstico Ejecutivo de Tendencias Regionales (Argentina, Chile, Uruguay)",
+        "diagnostico_paises": resumen
+    }
+
+@app.get("/api/v1/analytics/descargar", tags=["Analytics & Índices Sintéticos"])
+def descargar_analitica_csv(
+    anio_inicio: Optional[int] = Query(2018, description="Año inicial")
+):
+    """
+    Genera y descarga el CSV analítico con el índice sintético y las clasificaciones de tendencia
+    listo para su ingesta en Power BI, Tableau o Excel.
+    """
+    df_res = calcular_indice_sintetico_panel(anio_inicio=anio_inicio)
+    
+    # Aplanar desglose para formato tabular simple
+    df_export = df_res[[
+        "pais_codigo_iso3", "pais_nombre", "anio", 
+        "indice_sintetico", "indice_previo", "delta_absoluto", 
+        "variacion_interanual_pct", "tendencia"
+    ]].copy()
+    
+    ruta_export = os.path.join(PROCESSED_DIR, "dataset_analitico_indice_tendencias.csv")
+    exportar_csv(df_export, ruta_export)
+    
+    return FileResponse(
+        path=ruta_export,
+        filename="dataset_analitico_indice_tendencias.csv",
+        media_type="text/csv"
+    )
+

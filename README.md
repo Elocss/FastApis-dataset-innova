@@ -101,4 +101,8 @@ Interconexión de plataformas vía APIs directas (FastAPI a Power BI), auge de m
 * **Swagger UI:** `http://127.0.0.1:8000/docs`
 * **Descargar CSV Ocupaciones (5 sectores / 20 ocupaciones):** `GET /api/v1/ocupaciones/descargar`
 * **Descargar CSV Consolidado Regional:** `GET /api/v1/consolidado/descargar`
+* **Consultar Índice Sintético y Tendencias:** `GET /api/v1/analytics/indice-sintetico?anio_inicio=2018`
+* **Diagnóstico Ejecutivo de Tendencias Regionales:** `GET /api/v1/analytics/tendencias/resumen-ejecutivo`
+* **Descargar CSV Analítico (Índice y Dinámicas):** `GET /api/v1/analytics/descargar`
+
 
