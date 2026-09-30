@@ -186,7 +186,7 @@ async def procesar_ocupaciones_sectores():
         return _generar_ocupaciones_sectores()
 
 @app.get("/api/v1/ocupaciones/descargar", tags=["Sectores y Ocupaciones"])
-def descargar_ocupaciones_csv():
+async def descargar_ocupaciones_csv():
     ruta_archivo = os.path.join(PROCESSED_DIR, "dataset_ocupaciones_sectores_produccion.csv")
     if archivo_necesita_actualizacion(ruta_archivo):
         async with pipeline_lock:
