@@ -95,15 +95,15 @@ La plataforma mapea 20 ocupaciones en 5 sectores de alta productividad mediante 
 | **Salud** | `2262` | Bioquímico y Farmacéutico Clínico | Bioquímico / Farmacéutico Hospitalario | Químico Farmacéutico / Bioquímico | Químico Farmacéutico |
 | **Salud** | `3211` | Técnico en Diagnóstico por Imágenes | Técnico Radiólogo / Diagnóstico por Imágenes | Tecnólogo Médico en Radiología | Técnico en Imagenología |
 | **Energía** | `2149` | Ingeniero en Energías Renovables | Ingeniero en Energía / Solar / Eólica | Ingeniero Civil en Energías Renovables | Ingeniero en Energía / Generación Renovable |
-| **Energía** | `2146` | Ingeniero en Petróleo, Gas y Minería | Ingeniero en Petróleo y Gas (Vaca Muerta) | Ingeniero Civil Metalúrgico / Minas (Cobre/Litio)| Ingeniero Químico / Procesos de Combustible |
+| **Energía** | `2146` | Ingeniero en Petróleo, Gas y Minería | Ingeniero en Petróleo y Gas (Vaca Muerta) | Ingeniero Civil Metalúrgico / Minas (Cobre/Litio) | Ingeniero Químico / Procesos de Combustible |
 | **Energía** | `3113` | Técnico en Redes Inteligentes (Smart Grids) | Técnico Electricista en Redes y Telemetría | Técnico en Transmisión y Redes Eléctricas | Técnico en Redes y Distribución Eléctrica |
 | **Energía** | `2149` | Auditor en Eficiencia Energética | Consultor en Gestión de Energía ISO 50001 | Gestor Energético (Agencia Sostenibilidad) | Auditor Energético Certificado (MIEM) |
 | **Turismo** | `1411` | Administrador de Servicios Hoteleros | Gerente / Jefe de Operaciones Hoteleras | Administrador Hotelero y Hospitalidad | Gerente de Hotel / Alojamientos |
 | **Turismo** | `5113` | Guía Especializado en Ecoturismo | Guía de Turismo de Naturaleza / Parques | Guía de Turismo Aventura (Registro Sernatur) | Guía Turístico Patrimonial y Ecoturismo |
-| **Turismo** | `3339` | Coordinador de Turismo Digital (TravelTech)| Gestor Comercial y Operativo OTA | Coordinador de Ventas y Canales Digitales | Operador de Turismo Digital y Canales Web |
+| **Turismo** | `3339` | Coordinador de Turismo Digital (TravelTech) | Gestor Comercial y Operativo OTA | Coordinador de Ventas y Canales Digitales | Operador de Turismo Digital y Canales Web |
 | **Turismo** | `3434` | Chef Ejecutivo y Gastronomía Sostenible | Chef Ejecutivo / Jefe de Cocina | Chef / Administrador Gastronómico | Chef / Jefe de Cocina Profesional |
 | **Economía del Conocimiento** | `2166` | Diseñador UX/UI y Producto Digital | Diseñador Visual y de Experiencia de Usuario | Diseñador de Interacción y Producto Digital | Diseñador UX/UI |
-| **Economía del Conocimiento** | `2421` | Consultor en Transformación Digital | Analista de Procesos de Negocio / Scrum Master| Consultor de Innovación y Procesos | Consultor de Negocios y Transformación Digital |
+| **Economía del Conocimiento** | `2421` | Consultor en Transformación Digital | Analista de Procesos de Negocio / Scrum Master | Consultor de Innovación y Procesos | Consultor de Negocios y Transformación Digital |
 | **Economía del Conocimiento** | `2131` | Científico en Biotecnología y AgTech | Investigador Biotecnológico (CONICET/INTA) | Investigador en Biotecnología / Bioeconomía | Bioinformático / Investigador (Inst. Pasteur) |
 | **Economía del Conocimiento** | `2413` | Analista Financiero Cuantitativo y FinTech | Analista Cuantitativo / Portfolio Manager | Analista de Riesgos y Modelado FinTech | Analista Financiero FinTech / Gestión de Activos |
 

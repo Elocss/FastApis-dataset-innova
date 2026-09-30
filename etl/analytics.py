@@ -11,16 +11,31 @@ CONSOLIDATED_FILE = os.path.join(PROCESSED_DIR, "dataset_consolidado_regional.cs
 # --------------------------------------------------------------------------
 # 1. CONFIGURACIÓN METODOLÓGICA POR DEFECTO DEL ÍNDICE SINTÉTICO (IDELR)
 # --------------------------------------------------------------------------
+# Mapeo de alias para compatibilidad total de nombres de variables
+INDICADORES_ALIAS = {
+    "Tasa de Desocupación Total (% Fuerza de Trabajo)": "Tasa de Desocupación Total",
+    "Tasa de Desocupación Total": "Tasa de Desocupación Total",
+    "Tasa de Ocupación / Empleo": "Tasa de Ocupación",
+    "Tasa de Ocupación": "Tasa de Ocupación",
+    "Índice de Salario Medio Real (Base 2018=100)": "Índice de Salario Real",
+    "Índice de Salario Real": "Índice de Salario Real",
+    "Variación Anual del PIB Real": "Variación Anual del PIB Real",
+    "Tasa de Finalización de Educación Secundaria": "Tasa de Finalización de Educación Secundaria",
+    "Gasto Público en Educación (% del PIB)": "Gasto Público en Educación (% del PIB)",
+    "Inflación Anual (IPC acumulado)": "Inflación Anual (IPC acumulado)",
+    "Población Total": "Población Total"
+}
+
 DEFAULT_VARIABLES_CONFIG: Dict[str, Dict[str, Any]] = {
     "Variación Anual del PIB Real": {
         "dimension": "Economía",
         "peso": 0.25,
-        "polaridad": "positiva",  # A mayor valor, mejor
+        "polaridad": "positiva",
         "min_teorico": -12.0,
         "max_teorico": 15.0,
         "descripcion": "Crecimiento del Producto Interno Bruto a precios constantes"
     },
-    "Índice de Salario Medio Real (Base 2018=100)": {
+    "Índice de Salario Real": {
         "dimension": "Salarios",
         "peso": 0.25,
         "polaridad": "positiva",
@@ -28,7 +43,7 @@ DEFAULT_VARIABLES_CONFIG: Dict[str, Dict[str, Any]] = {
         "max_teorico": 120.0,
         "descripcion": "Poder adquisitivo de los salarios deflactado por IPC"
     },
-    "Tasa de Ocupación / Empleo": {
+    "Tasa de Ocupación": {
         "dimension": "Empleo",
         "peso": 0.20,
         "polaridad": "positiva",
@@ -44,10 +59,10 @@ DEFAULT_VARIABLES_CONFIG: Dict[str, Dict[str, Any]] = {
         "max_teorico": 90.0,
         "descripcion": "Tasa de graduación de nivel secundario/medio superior"
     },
-    "Tasa de Desocupación Total (% Fuerza de Trabajo)": {
+    "Tasa de Desocupación Total": {
         "dimension": "Empleo",
         "peso": 0.15,
-        "polaridad": "negativa",  # A menor valor, mejor
+        "polaridad": "negativa",
         "min_teorico": 3.0,
         "max_teorico": 15.0,
         "descripcion": "Población desocupada en relación a la fuerza de trabajo activa"
@@ -139,7 +154,7 @@ def calcular_indice_sintetico_panel(
 
     # Calcular min y max empíricos si no están definidos
     for var_nom, cfg in config.items():
-        sub_var = df_calc[df_calc["indicador_nombre"] == var_nom]
+        sub_var = df_calc[df_calc["indicador_nombre"].map(lambda x: INDICADORES_ALIAS.get(x, x)) == var_nom]
         if not sub_var.empty:
             if cfg.get("min_teorico") is None:
                 cfg["min_teorico"] = float(sub_var["valor"].min())
@@ -157,7 +172,7 @@ def calcular_indice_sintetico_panel(
         peso_efectivo_total = 0.0
 
         for _, fila in grupo.iterrows():
-            indicador = fila["indicador_nombre"]
+            indicador = INDICADORES_ALIAS.get(fila["indicador_nombre"], fila["indicador_nombre"])
             if indicador in config:
                 cfg = config[indicador]
                 val_real = float(fila["valor"])

@@ -89,20 +89,40 @@ Interconexión de plataformas vía APIs directas (FastAPI a Power BI), auge de m
 
 * **[Informe de Mapeo de Variables Equivalentes (ARG, CHL, URY)](INFORME_MAPEO_VARIABLES_REGIONAL.md)**: Homologación metodológica de indicadores socioeconómicos, fuentes (INDEC, INE Chile, INE Uruguay, OIT, CEPAL) y equivalencias CIUO-08.
 * **[Informe Técnico y Comparativo Regional](INFORME_TECNICO_REGIONAL.md)**: Síntesis macroeconómica comparada y análisis por país.
+* **[Informe de Fixes y Robustez de la API](INFORME_FIXES_API.md)**: Concurrencia, mecanismos de caché y pruebas de validación.
 
 ---
 
 ## 6. Instrucciones de Ejecución
 
+### Instalación y Activación
 ```powershell
-# Activar entorno e iniciar la API
-.\.venv\Scripts\python.exe -m uvicorn main:app --reload --port 8000
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### Inicio de la API
+```powershell
+uvicorn main:app --reload --port 8000
 ```
 * **Swagger UI:** `http://127.0.0.1:8000/docs`
-* **Descargar CSV Ocupaciones (5 sectores / 20 ocupaciones):** `GET /api/v1/ocupaciones/descargar`
-* **Descargar CSV Consolidado Regional:** `GET /api/v1/consolidado/descargar`
-* **Consultar Índice Sintético y Tendencias:** `GET /api/v1/analytics/indice-sintetico?anio_inicio=2018`
-* **Diagnóstico Ejecutivo de Tendencias Regionales:** `GET /api/v1/analytics/tendencias/resumen-ejecutivo`
-* **Descargar CSV Analítico (Índice y Dinámicas):** `GET /api/v1/analytics/descargar`
 
+### Catálogo de Endpoints Principales
 
+* **Indicadores Socioeconómicos por País:**
+  * `GET /api/v1/paises/{pais}/procesar`
+  * `GET /api/v1/paises/{pais}/descargar`
+* **Consolidado Regional:**
+  * `GET /api/v1/consolidado/procesar`
+  * `GET /api/v1/consolidado/descargar`
+* **Ocupaciones y Sectores Estratégicos:**
+  * `GET /api/v1/ocupaciones/procesar`
+  * `GET /api/v1/ocupaciones/descargar`
+  * `GET /api/v1/ocupaciones/catalogo` (con filtros `sector` y `pais`)
+* **Analytics, Índice Sintético y Tendencias:**
+  * `GET /api/v1/analytics/configuracion-ponderaciones`
+  * `GET /api/v1/analytics/indice-sintetico?anio_inicio=2018`
+  * `POST /api/v1/analytics/indice-sintetico/custom`
+  * `GET /api/v1/analytics/tendencias/resumen-ejecutivo`
+  * `GET /api/v1/analytics/descargar`
