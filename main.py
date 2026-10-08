@@ -12,9 +12,15 @@ from etl.ocupaciones_client import obtener_dataset_ocupaciones_sectores
 from etl.cleaner import depurar_y_estructurar, exportar_csv
 from etl.analytics import (
     DEFAULT_VARIABLES_CONFIG,
+    DEFAULT_ICOL_WEIGHTS,
+    DEMANDA_SCORE_MAP,
+    PAIS_FACTOR_MADUREZ_MAP,
     CustomWeightsRequest,
+    CustomOcupacionesWeightsRequest,
     calcular_indice_sintetico_panel,
-    generar_resumen_ejecutivo_paises
+    generar_resumen_ejecutivo_paises,
+    calcular_indice_oportunidad_laboral,
+    generar_matriz_validacion_cruzada
 )
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,8 +32,8 @@ pipeline_lock = asyncio.Lock()
 
 app = FastAPI(
     title="Innova Data Platform - Observatorio Regional (Argentina, Uruguay, Chile)",
-    description="API para la ingesta desde ILOSTAT, CEPALSTAT y fuentes gubernamentales de 5 Sectores y 20 Ocupaciones estratégicas con motor analítico de tendencias e índices compuestos.",
-    version="1.2.0"
+    description="API para la ingesta desde ILOSTAT, CEPALSTAT y fuentes gubernamentales de 5 Sectores y 20 Ocupaciones estratégicas con motor analítico de tendencias, índices compuestos y validación cruzada.",
+    version="1.3.0"
 )
 
 @app.get("/", tags=["General"])
@@ -43,6 +49,10 @@ def read_root():
             "INDEC / Sec. Economía del Conocimiento (Argentina)",
             "INE / MIEM / CUTI (Uruguay)",
             "INE / SENCE / Min. Energía (Chile)"
+        ],
+        "indices_disponibles": [
+            "IDELR: Índice de Desarrollo Económico-Laboral Regional (Nivel País)",
+            "ICOL: Índice Compuesto de Oportunidad Laboral (Nivel Ocupación x País)"
         ],
         "documentacion_swagger": "/docs",
         "status": "online"
@@ -215,9 +225,9 @@ def catalogo_ocupaciones(
     return df.to_dict(orient="records")
 
 # --------------------------------------------------------------------------
-# 4. ENDPOINTS: CÁLCULO DE ÍNDICE SINTÉTICO, DINÁMICA TEMPORAL Y TENDENCIAS
+# 4. ENDPOINTS: CÁLCULO DE ÍNDICE SINTÉTICO MACRO (IDELR)
 # --------------------------------------------------------------------------
-@app.get("/api/v1/analytics/configuracion-ponderaciones", tags=["Analytics & Índices Sintéticos"])
+@app.get("/api/v1/analytics/configuracion-ponderaciones", tags=["Analytics: Índice Macroeconómico (IDELR)"])
 def obtener_configuracion_ponderaciones():
     """
     Retorna el modelo metodológico de variables, ponderaciones, dimensiones y polaridades
@@ -230,7 +240,7 @@ def obtener_configuracion_ponderaciones():
         "restriccion_pesos": "La suma de ponderaciones equivale a 1.0 (100%)"
     }
 
-@app.get("/api/v1/analytics/indice-sintetico", tags=["Analytics & Índices Sintéticos"])
+@app.get("/api/v1/analytics/indice-sintetico", tags=["Analytics: Índice Macroeconómico (IDELR)"])
 def consultar_indice_sintetico(
     pais: Optional[str] = Query(None, description="Filtrar por código ISO3: ARG, CHL o URY"),
     anio_inicio: Optional[int] = Query(2018, description="Año de inicio de la serie temporal (recomendado 2018)"),
@@ -238,8 +248,8 @@ def consultar_indice_sintetico(
     tolerancia_epsilon: float = Query(1.0, description="Umbral de tolerancia (%) para clasificar ESTABILIDAD vs CRECIMIENTO/DISMINUCIÓN")
 ):
     """
-    Calcula de manera funcional el índice sintético y su evolución histórica,
-    identificando la tasa de variación interanual y la tendencia (Crecimiento, Estabilidad, Disminución).
+    Calcula funcionalmente el índice sintético macro y su evolución histórica,
+    identificando la tasa de variación interanual y la tendencia.
     """
     df_res = calcular_indice_sintetico_panel(
         epsilon=tolerancia_epsilon,
@@ -257,10 +267,10 @@ def consultar_indice_sintetico(
         "serie_historica": df_res.to_dict(orient="records")
     }
 
-@app.post("/api/v1/analytics/indice-sintetico/custom", tags=["Analytics & Índices Sintéticos"])
+@app.post("/api/v1/analytics/indice-sintetico/custom", tags=["Analytics: Índice Macroeconómico (IDELR)"])
 def calcular_indice_sintetico_personalizado(payload: CustomWeightsRequest):
     """
-    Permite a los usuarios y dashboards definir dinámicamente un vector de variables y ponderaciones personalizadas.
+    Permite definir dinámicamente un vector de variables y ponderaciones macroeconómicas personalizadas.
     """
     custom_cfg = {}
     for var in payload.variables:
@@ -279,12 +289,12 @@ def calcular_indice_sintetico_personalizado(payload: CustomWeightsRequest):
         anio_fin=payload.anio_fin
     )
     return {
-        "mensaje": "Índice personalizado calculado con éxito",
+        "mensaje": "Índice macroeconómico personalizado calculado con éxito",
         "variables_evaluadas": list(custom_cfg.keys()),
         "serie_historica": df_res.to_dict(orient="records")
     }
 
-@app.get("/api/v1/analytics/tendencias/resumen-ejecutivo", tags=["Analytics & Índices Sintéticos"])
+@app.get("/api/v1/analytics/tendencias/resumen-ejecutivo", tags=["Analytics: Índice Macroeconómico (IDELR)"])
 def resumen_ejecutivo_tendencias(
     anio_inicio: Optional[int] = Query(2018, description="Año inicial para el análisis de tendencia"),
     tolerancia_epsilon: float = Query(1.0, description="Umbral de estabilidad porcentual")
@@ -303,13 +313,12 @@ def resumen_ejecutivo_tendencias(
         "diagnostico_paises": resumen
     }
 
-@app.get("/api/v1/analytics/descargar", tags=["Analytics & Índices Sintéticos"])
+@app.get("/api/v1/analytics/descargar", tags=["Analytics: Índice Macroeconómico (IDELR)"])
 def descargar_analitica_csv(
     anio_inicio: Optional[int] = Query(2018, description="Año inicial")
 ):
     """
-    Genera y descarga el CSV analítico con el índice sintético y las clasificaciones de tendencia
-    listo para su ingesta en Power BI, Tableau o Excel.
+    Genera y descarga el CSV analítico del índice sintético macroeconómico.
     """
     df_res = calcular_indice_sintetico_panel(anio_inicio=anio_inicio)
     
@@ -325,5 +334,70 @@ def descargar_analitica_csv(
     return FileResponse(
         path=ruta_export,
         filename="dataset_analitico_indice_tendencias.csv",
+        media_type="text/csv"
+    )
+
+# --------------------------------------------------------------------------
+# 5. ENDPOINTS: CÁLCULO DE ÍNDICE OCUPACIONAL (ICOL) Y VALIDACIÓN CRUZADA
+# --------------------------------------------------------------------------
+@app.get("/api/v1/analytics/ocupaciones/ranking", tags=["Analytics: Ocupaciones & Sectores (ICOL)"])
+def ranking_ocupaciones_icol(
+    pais: Optional[str] = Query(None, description="Filtrar por código ISO3: ARG, CHL o URY"),
+    sector: Optional[str] = Query(None, description="Filtrar por sector: Tecnología, Salud, Energía, Turismo, Economía del Conocimiento")
+):
+    """
+    Calcula el ranking y score del Índice Compuesto de Oportunidad Laboral (ICOL)
+    cruzando salud macroeconómica, nivel de demanda y tasa de crecimiento proyectada.
+    """
+    df_icol = calcular_indice_oportunidad_laboral(pais_filtro=pais, sector_filtro=sector)
+    return {
+        "total_ocupaciones_evaluadas": len(df_icol),
+        "filtros_aplicados": {"pais": pais, "sector": sector},
+        "ranking_ocupaciones": df_icol.to_dict(orient="records")
+    }
+
+@app.get("/api/v1/analytics/ocupaciones/validacion-cruzada", tags=["Analytics: Ocupaciones & Sectores (ICOL)"])
+def validacion_cruzada_ocupaciones():
+    """
+    Ejecuta y retorna el control de calidad estadístico y matriz de validación
+    cruzada completa: 3 Países x 5 Sectores x 20 Ocupaciones (60 combinaciones).
+    """
+    return generar_matriz_validacion_cruzada()
+
+@app.post("/api/v1/analytics/ocupaciones/custom", tags=["Analytics: Ocupaciones & Sectores (ICOL)"])
+def simular_ponderaciones_ocupaciones(payload: CustomOcupacionesWeightsRequest):
+    """
+    Simulador interactivo de escenarios de ponderación para el Índice de Oportunidad Laboral (ICOL).
+    """
+    weights = {
+        "peso_macro_idelr": payload.peso_macro_idelr,
+        "peso_demanda_mercado": payload.peso_demanda_mercado,
+        "peso_crecimiento_estimado": payload.peso_crecimiento_estimado
+    }
+    df_res = calcular_indice_oportunidad_laboral(
+        weights=weights,
+        pais_filtro=payload.pais,
+        sector_filtro=payload.sector
+    )
+    return {
+        "mensaje": "Simulación de ICOL completada exitosamente",
+        "ponderaciones_utilizadas": weights,
+        "total_evaluadas": len(df_res),
+        "ranking_simulado": df_res.to_dict(orient="records")
+    }
+
+@app.get("/api/v1/analytics/ocupaciones/descargar", tags=["Analytics: Ocupaciones & Sectores (ICOL)"])
+def descargar_analitica_ocupaciones_csv():
+    """
+    Genera y descarga el CSV enriquecido del Índice Compuesto de Oportunidad Laboral (ICOL)
+    con rankings regionales, sectoriales y por país.
+    """
+    df_icol = calcular_indice_oportunidad_laboral()
+    ruta_export = os.path.join(PROCESSED_DIR, "dataset_analitico_ocupaciones_score.csv")
+    exportar_csv(df_icol, ruta_export)
+    
+    return FileResponse(
+        path=ruta_export,
+        filename="dataset_analitico_ocupaciones_score.csv",
         media_type="text/csv"
     )

@@ -1,7 +1,7 @@
 # Observatorio de Indicadores Regionales: Argentina, Uruguay y Chile
 ## Pipeline ETL con FastAPI, Ministerios Oficiales, ILOSTAT y CEPALSTAT
 
-Este repositorio contiene la arquitectura integral de ingesta, depuración de datos, generación de datasets listos para producción y el diagnóstico analítico de **5 sectores estratégicos** y **20 ocupaciones clave** para el Cono Sur (**Argentina, Uruguay y Chile**).
+Este repositorio contiene la arquitectura integral de ingesta, depuración de datos, generación de datasets listos para producción y el diagnóstico analítico de **5 sectores estratégicos** y **20 ocupaciones clave** para el Cono Sur (**Argentina, Uruguay y Chile**), con motores de cálculo para índices sintéticos macroeconómicos y de oportunidad laboral.
 
 ---
 
@@ -27,6 +27,9 @@ Para garantizar la máxima validez y trazabilidad institucional, el pipeline int
   4. **Turismo**
   5. **Economía del Conocimiento**
 * **20 Ocupaciones Normalizadas:** Clasificadas según el estándar internacional **CIUO-08 (ISCO-08)** de la OIT.
+* **Motores de Cálculo de Índices Sintéticos:**
+  * **IDELR:** Índice de Desarrollo Económico-Laboral Regional (series de tiempo macro 2018–2024).
+  * **ICOL:** Índice Compuesto de Oportunidad Laboral (evaluación cruzada de 60 combinaciones país-ocupación).
 
 ---
 
@@ -57,43 +60,16 @@ Para garantizar la máxima validez y trazabilidad institucional, el pipeline int
 
 ---
 
-## 4. Preguntas Estratégicas y Diagnóstico del Mercado Laboral
+## 4. Informes Técnicos y de Homologación
 
-### 1. ¿Qué sectores están creciendo o disminuyendo?
-* **🟢 Crecimiento Acelerado:** Tecnología y Servicios Basados en el Conocimiento (SBC), Energías Renovables / Minería de Transición (Litio/Cobre) y TravelTech/Logística.
-* **🟡 Estables / En Transformación:** Agroindustria / AgTech (menor mano de obra manual, mayor demanda técnica) y Servicios de Salud/Cuidado.
-* **🔴 En Contracción Relativa:** Manufactura tradicional no automatizada, comercio minorista tradicional y tareas administrativas burocráticas repetitivas.
-
-### 2. ¿Qué ocupaciones presentan mayores oportunidades de empleo?
-Ingenieros de Datos / IA, Desarrolladores Full-Stack, Arquitectos Cloud, Ingenieros en Energías Renovables, Consultores de Transformación Digital y Enfermeros/as de Cuidados Críticos.
-
-### 3. ¿Qué habilidades están aumentando su demanda?
-* **Duras:** Python, FastAPI, modelado dimensional, DAX / Power BI, arquitecturas Cloud, integración de APIs de IA (LLMs) e inglés avanzado.
-* **Blandas:** Pensamiento crítico, resolución de problemas complejos, adaptabilidad (*learnability*) y trabajo asíncrono.
-
-### 4. ¿Cómo evolucionan los salarios y la cantidad de puestos?
-Polarización del mercado laboral: alta prima salarial e ingresos dolarizados para talento tecnológico y de conocimiento; presión sobre puestos de tareas repetitivas frente a la automatización.
-
-### 5. ¿Existe correspondencia entre la formación disponible y las necesidades del mercado?
-Existe un **desacople estructural (*skills mismatch*)**. Las ofertas formativas tradicionales tardan en actualizarse, mientras el mercado exige habilidades prácticas y certificaciones ágiles. La culminación secundaria en Uruguay (47.0%) y la deserción universitaria en Argentina son cuellos de botella clave.
-
-### 6. ¿Qué nuevas brechas de habilidades (*skills gaps*) están apareciendo?
-Brecha de alfabetización en Inteligencia Artificial (*AI Literacy Gap*), falta de cultura de datos en mandos medios (*data-driven gap*) y demanda de seniority práctico frente al conocimiento puramente teórico.
-
-### 7. ¿Qué tendencias pueden anticiparse?
-Interconexión de plataformas vía APIs directas (FastAPI a Power BI), auge de micro-credenciales y bootcamps, y consolidación del Cono Sur como polo preferencial de *nearshoring* para mercados globales.
-
----
-
-## 5. Informes Técnicos y de Homologación
-
+* **[Informe Metodológico de Índices Sintéticos (IDELR e ICOL)](INFORME_METODOLOGICO_INDICES.md)**: Formulación matemática, normalización Min-Max, ponderaciones, reglas de estabilidad y matriz de validación cruzada.
 * **[Informe de Mapeo de Variables Equivalentes (ARG, CHL, URY)](INFORME_MAPEO_VARIABLES_REGIONAL.md)**: Homologación metodológica de indicadores socioeconómicos, fuentes (INDEC, INE Chile, INE Uruguay, OIT, CEPAL) y equivalencias CIUO-08.
 * **[Informe Técnico y Comparativo Regional](INFORME_TECNICO_REGIONAL.md)**: Síntesis macroeconómica comparada y análisis por país.
-* **[Informe de Fixes y Robustez de la API](INFORME_FIXES_API.md)**: Concurrencia, mecanismos de caché y pruebas de validación.
+* **[Casos de Prueba de la API](tests/CASOS_API.md)**: Especificación de casos funcionales, analíticos y de integración.
 
 ---
 
-## 6. Instrucciones de Ejecución
+## 5. Instrucciones de Ejecución y Pruebas
 
 ### Instalación y Activación
 ```powershell
@@ -102,13 +78,20 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+### Ejecutar Suite Automatizada de Pruebas
+```powershell
+python -m unittest tests/test_analytics.py -v
+```
+
 ### Inicio de la API
 ```powershell
 uvicorn main:app --reload --port 8000
 ```
 * **Swagger UI:** `http://127.0.0.1:8000/docs`
 
-### Catálogo de Endpoints Principales
+---
+
+## 6. Catálogo de Endpoints Principales
 
 * **Indicadores Socioeconómicos por País:**
   * `GET /api/v1/paises/{pais}/procesar`
@@ -120,9 +103,14 @@ uvicorn main:app --reload --port 8000
   * `GET /api/v1/ocupaciones/procesar`
   * `GET /api/v1/ocupaciones/descargar`
   * `GET /api/v1/ocupaciones/catalogo` (con filtros `sector` y `pais`)
-* **Analytics, Índice Sintético y Tendencias:**
+* **Analytics: Índice Macroeconómico (IDELR):**
   * `GET /api/v1/analytics/configuracion-ponderaciones`
   * `GET /api/v1/analytics/indice-sintetico?anio_inicio=2018`
   * `POST /api/v1/analytics/indice-sintetico/custom`
   * `GET /api/v1/analytics/tendencias/resumen-ejecutivo`
   * `GET /api/v1/analytics/descargar`
+* **Analytics: Ocupaciones & Sectores (ICOL):**
+  * `GET /api/v1/analytics/ocupaciones/ranking` (ranking regional y por país)
+  * `GET /api/v1/analytics/ocupaciones/validacion-cruzada` (matriz 60 evaluaciones)
+  * `POST /api/v1/analytics/ocupaciones/custom` (simulación de ponderaciones)
+  * `GET /api/v1/analytics/ocupaciones/descargar` (descarga CSV analítico)

@@ -1,31 +1,31 @@
-# Casos de prueba de la API
+# Casos de prueba de la API y Motor Analítico
 
-Este documento describe dos casos funcionales y de integración para validar la API de `DataAnalyst`. El contrato estructurado equivalente está en [casos_api.json](casos_api.json).
+Este documento describe los casos funcionales, de integración y analíticos para validar la API de `Innova Data Platform`.
 
-## Preparación
+## Preparación y Ejecución de la Suite Automática
 
-1. Instalar dependencias:
-
+1. Activar el entorno virtual:
 ```powershell
-python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
 ```
 
-2. Iniciar la API:
+2. Ejecutar la suite automatizada de pruebas unitarias y de integración:
+```powershell
+python -m unittest tests/test_analytics.py -v
+```
 
+3. Iniciar la API en desarrollo:
 ```powershell
 uvicorn main:app --reload --port 8000
 ```
-
 La URL base utilizada es `http://127.0.0.1:8000`.
 
-## API-FUNC-001: catálogo filtrado
+---
 
-**Tipo:** funcional  
-**Objetivo:** comprobar que `sector` y `pais` se apliquen simultáneamente.
+## API-FUNC-001: Catálogo Filtrado de Ocupaciones
 
-### Ejecución
+**Tipo:** Funcional  
+**Objetivo:** Comprobar que los filtros de `sector` y `pais` se apliquen simultáneamente.
 
 ```powershell
 Invoke-RestMethod `
@@ -33,59 +33,76 @@ Invoke-RestMethod `
   -Method Get
 ```
 
-### Resultado esperado
-
+**Resultado esperado:**
 - HTTP `200`.
-- La respuesta es un arreglo JSON de `4` elementos.
-- Todos los elementos tienen `pais_codigo_iso3` igual a `ARG`.
-- Todos los elementos tienen `sector` igual a `Tecnología`.
-- Cada elemento incluye `ocupacion_id`, `ocupacion_nombre`, `codigo_ciuo08_oit`, `nivel_demanda` y `habilidades_clave`.
+- Arreglo JSON de `4` elementos con `pais_codigo_iso3 = "ARG"` y `sector = "Tecnología"`.
 
-## API-INT-001: consolidado regional
+---
 
-**Tipo:** integración  
-**Objetivo:** comprobar el flujo conjunto de extracción, depuración, generación de CSV y descarga.
+## API-INT-001: Pipeline Consolidado Regional
 
-Este caso puede consultar ILOSTAT. Si ILOSTAT no responde, el cliente utiliza la serie local de respaldo, por lo que la prueba sigue siendo reproducible, aunque la procedencia de algunos registros puede variar.
+**Tipo:** Integración  
+**Objetivo:** Comprobar extracción, depuración, consolidación y descarga del CSV regional.
 
-### Paso 1: procesar
+```powershell
+# Paso 1: Procesar
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/v1/consolidado/procesar" -Method Get
+
+# Paso 2: Descargar
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/v1/consolidado/descargar" -Method Get
+```
+
+---
+
+## API-ANL-001: Serie Histórica del Índice Macroeconómico (IDELR)
+
+**Tipo:** Analítico / Funcional  
+**Objetivo:** Validar el cálculo del IDELR, variación interanual y clasificación de tendencias con banda muerta ($\epsilon = 1.0\%$).
 
 ```powershell
 Invoke-RestMethod `
-  -Uri "http://127.0.0.1:8000/api/v1/consolidado/procesar" `
+  -Uri "http://127.0.0.1:8000/api/v1/analytics/indice-sintetico?pais=URY&anio_inicio=2018" `
   -Method Get
 ```
 
-### Resultado esperado del paso 1
-
+**Resultado esperado:**
 - HTTP `200`.
-- `status` es `Pipeline regional completado`.
-- `paises_procesados` contiene `Argentina`, `Chile` y `Uruguay`.
-- `total_filas_consolidadas` es mayor que `0`.
-- Se generan estos archivos:
-  - `data/processed/dataset_consolidado_regional.csv`
-  - `data/processed/dataset_argentina_produccion.csv`
-  - `data/processed/dataset_chile_produccion.csv`
-  - `data/processed/dataset_uruguay_produccion.csv`
+- Registros con campos `indice_sintetico`, `delta_absoluto`, `variacion_interanual_pct`, `tendencia` (`CRECIMIENTO`, `ESTABILIDAD`, `DISMINUCION`) y `desglose_variables`.
 
-### Paso 2: descargar
+---
+
+## API-ANL-002: Ranking de Oportunidad de Ocupaciones (ICOL)
+
+**Tipo:** Analítico / Funcional  
+**Objetivo:** Validar el cálculo del score compuesto ICOL cruzando macroeconomía, demanda y crecimiento.
 
 ```powershell
-$response = Invoke-WebRequest `
-  -Uri "http://127.0.0.1:8000/api/v1/consolidado/descargar" `
+Invoke-RestMethod `
+  -Uri "http://127.0.0.1:8000/api/v1/analytics/ocupaciones/ranking?pais=CHL&sector=Energ%C3%ADa" `
   -Method Get
-
-$response.StatusCode
-$response.Headers["Content-Type"]
-$response.Content.Substring(0, 80)
 ```
 
-### Resultado esperado del paso 2
-
+**Resultado esperado:**
 - HTTP `200`.
-- `Content-Type` comienza por `text/csv`.
-- El contenido contiene las columnas canónicas `pais_codigo_iso3`, `pais_nombre`, `dimension` e `indicador_nombre`.
+- 4 ocupaciones del sector Energía en Chile ordenadas por `indice_oportunidad_icol`.
+- Incluye `score_demanda_100`, `score_crecimiento_100`, `score_entorno_macro_100`, `ranking_pais` y `ranking_sector`.
 
-## Nota
+---
 
-Estos casos están expresados como especificación funcional y todavía no incluyen un runner automático. Pueden convertirse posteriormente en pruebas `pytest` usando `fastapi.testclient.TestClient`, sustituyendo las llamadas externas a ILOSTAT por mocks para evitar dependencia de red.
+## API-ANL-003: Matriz de Validación Cruzada (3 Países x 5 Sectores x 20 Ocupaciones)
+
+**Tipo:** Control de Calidad Analítico  
+**Objetivo:** Certificar las 60 combinaciones evaluadas, sin nulos y con scores acotados en $[0, 100]$.
+
+```powershell
+Invoke-RestMethod `
+  -Uri "http://127.0.0.1:8000/api/v1/analytics/ocupaciones/validacion-cruzada" `
+  -Method Get
+```
+
+**Resultado esperado:**
+- HTTP `200`.
+- `total_combinaciones_validadas = 60`.
+- `invariante_rango_0_100 = true`.
+- `integridad_sin_nulos = true`.
+- Resúmenes agregados por sector y por país.
