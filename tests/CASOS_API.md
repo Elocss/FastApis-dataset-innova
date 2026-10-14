@@ -106,3 +106,16 @@ Invoke-RestMethod `
 - `invariante_rango_0_100 = true`.
 - `integridad_sin_nulos = true`.
 - Resúmenes agregados por sector y por país.
+
+---
+
+## Casos de Prueba de Carga y Pipeline (LOAD-006 a LOAD-012)
+
+Para las especificaciones técnicas y criterios de aceptación acordados con el equipo de QA sobre:
+- **LOAD-006:** Duplicados en carga manual y política `UPSERT`.
+- **LOAD-009:** Cobertura de 135 registros (45 por país: ARG, CHL, URY) en `dataset_consolidado_regional.csv`.
+- **LOAD-010:** Contrato de 8 campos de Backend y transformación a `ESQUEMA_COLUMNAS` de `cleaner.py`.
+- **LOAD-011:** Regla de deduplicación canónica en `cleaner.py`.
+- **LOAD-012:** Matriz de registros válidos, descartados y cuarentena.
+
+Consulte el documento oficial: [DEFINICIONES_CASOS_CARGA_QA.md](../DEFINICIONES_CASOS_CARGA_QA.md).
