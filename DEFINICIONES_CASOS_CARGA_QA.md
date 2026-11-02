@@ -1,6 +1,7 @@
 # 📌 Definiciones Técnicas y Criterios de Aceptación — Casos de Carga (QA)
-**Proyecto:** Innova Data Platform / Observatorio Regional (`Innova Lab`)  
-**Repositorio:** `https://github.com/Elocss/FastApis-dataset-innova.git`  
+**Proyecto:** Innova Data Platform / Observatorio Regional (`Innova Lab - Equipo 6`)  
+**Repositorio Oficial:** `https://github.com/InnovaLab-2C-2026-Equipo-6/DataAnalyst.git`  
+**Repositorio Mirror:** `https://github.com/Elocss/FastApis-dataset-innova.git`  
 **Módulos Involucrados:** `etl/cleaner.py`, `main.py`, Pipeline de Ingesta, Dataset Consolidado Regional  
 **Fecha de Aprobación:** Octubre 2026  
 **Estado:** Aprobado / Listo para Matriz de Pruebas  
@@ -48,7 +49,7 @@ $$\text{Total Regional: } 3 \text{ países} \times 45 \text{ registros/país} = 
 * 🇺🇾 **Uruguay (URY):** 45 registros
 
 ### C. Cobertura Matricial (por qué 45 registros):
-Cada país cubre una cuadrícula uniforme sin nulos para calcular el **Índice Sintético Regional (IDELR)** y el **Índice Compuesto de Oportunidad Laboral (ICOL)**:
+Cada país cubre una cuadrícula uniforme sin nulos para alimentar el cálculo del **Índice Sintético Regional (IDELR)** y el **Índice Compuesto de Oportunidad Laboral (ICOL)**:
 $$\text{Matriz por País: } 5 \text{ Indicadores Base} \times 3 \text{ Dimensiones / Sectores Clave} \times 3 \text{ Ventanas Temporales} = 45 \text{ registros}$$
 
 QA puede verificar en cualquier momento con la instrucción:

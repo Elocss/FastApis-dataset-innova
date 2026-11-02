@@ -66,6 +66,7 @@ Para garantizar la máxima validez y trazabilidad institucional, el pipeline int
 * **[Informe de Mapeo de Variables Equivalentes (ARG, CHL, URY)](INFORME_MAPEO_VARIABLES_REGIONAL.md)**: Homologación metodológica de indicadores socioeconómicos, fuentes (INDEC, INE Chile, INE Uruguay, OIT, CEPAL) y equivalencias CIUO-08.
 * **[Informe Técnico y Comparativo Regional](INFORME_TECNICO_REGIONAL.md)**: Síntesis macroeconómica comparada y análisis por país.
 * **[Casos de Prueba de la API](tests/CASOS_API.md)**: Especificación de casos funcionales, analíticos y de integración.
+* **[Definiciones Técnicas y Criterios de Aceptación — Casos de Carga (QA)](DEFINICIONES_CASOS_CARGA_QA.md)**: Especificaciones y aprobaciones técnicas para QA (LOAD-006 a LOAD-012, contrato de ingesta manual, deduplicación en cleaner.py y validación de cobertura de 135 registros).
 
 ---
 
