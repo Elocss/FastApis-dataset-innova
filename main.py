@@ -401,3 +401,83 @@ def descargar_analitica_ocupaciones_csv():
         filename="dataset_analitico_ocupaciones_score.csv",
         media_type="text/csv"
     )
+
+# --------------------------------------------------------------------------
+# 5. ENDPOINTS DE DATA SCIENCE: BRECHAS, HABILIDADES EMERGENTES Y ALERTAS
+# --------------------------------------------------------------------------
+from etl.data_science import (
+    calcular_brechas_habilidades_sectoriales,
+    evaluar_comparativa_laboral_educativa,
+    generar_sistema_alertas_tempranas,
+    generar_reporte_integral_data_science,
+    REGLAS_DETECCION_CONFIG,
+    HABILIDADES_EMERGENTES_CATALOGO
+)
+
+@app.get("/api/v1/ds/brechas-habilidades", tags=["Data Science & Brechas"])
+def obtener_brechas_y_habilidades(
+    pais: Optional[str] = Query(None, description="Filtro de país: ARG, CHL, URY"),
+    sector: Optional[str] = Query(None, description="Filtro de sector: Tecnología, Salud, Energía, Turismo, Economía del Conocimiento")
+):
+    """
+    Identifica las primeras brechas de talento (Talent Gap Score) y cataloga las habilidades
+    emergentes de frontera (2026+) para las 20 ocupaciones en Argentina, Chile y Uruguay.
+    """
+    data = calcular_brechas_habilidades_sectoriales(pais_filtro=pais, sector_filtro=sector)
+    return {
+        "status": "success",
+        "total_ocupaciones_analizadas": len(data),
+        "filtros_aplicados": {"pais": pais, "sector": sector},
+        "brechas_y_habilidades": data
+    }
+
+@app.get("/api/v1/ds/reglas-deteccion", tags=["Data Science & Brechas"])
+def obtener_reglas_deteccion_variaciones():
+    """
+    Retorna el catálogo formal de reglas estadísticas y umbrales matemáticos (R1 a R4)
+    definidos para detectar variaciones significativas, volatilidad y descalces.
+    """
+    return {
+        "status": "success",
+        "total_reglas_activas": len(REGLAS_DETECCION_CONFIG),
+        "reglas_deteccion_variaciones": REGLAS_DETECCION_CONFIG
+    }
+
+@app.get("/api/v1/ds/alertas-tendencias", tags=["Data Science & Brechas"])
+def obtener_alertas_tendencias_e_indices(
+    pais: Optional[str] = Query(None, description="Filtro de país: ARG, CHL, URY"),
+    severidad: Optional[str] = Query("TODAS", description="Severidad mínima: CRITICA, ALTA, MODERADA, TODAS")
+):
+    """
+    Sistema de alertas tempranas automatizado sobre cambios bruscos de tendencias macro (IDELR),
+    intensidad ocupacional (ICOL), brechas de talento y velocidad de obsolescencia técnica.
+    """
+    return generar_sistema_alertas_tempranas(pais_filtro=pais, severidad_minima=severidad)
+
+@app.get("/api/v1/ds/comparativa-educativo-laboral", tags=["Data Science & Brechas"])
+def obtener_comparativa_educativo_laboral(
+    pais: Optional[str] = Query(None, description="Filtro de país: ARG, CHL, URY")
+):
+    """
+    Compara la demanda laboral de nuevos puestos frente a la oferta real de graduados universitarios
+    y terciarios según registros oficiales (SPU/DiNIECE en ARG, SIES/Mineduc en CHL, MEC/UdelaR en URY).
+    Calcula el Coeficiente de Cobertura Educativa (CCE) y clasifica el descalce (mismatch).
+    """
+    data = evaluar_comparativa_laboral_educativa(pais_filtro=pais)
+    return {
+        "status": "success",
+        "total_sectores_evaluados": len(data),
+        "filtro_pais": pais,
+        "comparativa_educativo_laboral": data
+    }
+
+@app.get("/api/v1/ds/reporte-integral", tags=["Data Science & Brechas"])
+def obtener_reporte_integral_data_science(
+    pais: Optional[str] = Query(None, description="Filtro de país opcional (ARG, CHL, URY)")
+):
+    """
+    Genera el diagnóstico consolidado y resumen ejecutivo de Data Science para ser consumido
+    por los demás equipos del proyecto (BI, Producto, Frontend, Políticas Públicas).
+    """
+    return generar_reporte_integral_data_science(pais_filtro=pais)
+

@@ -114,3 +114,10 @@ uvicorn main:app --reload --port 8000
   * `GET /api/v1/analytics/ocupaciones/validacion-cruzada` (matriz 60 evaluaciones)
   * `POST /api/v1/analytics/ocupaciones/custom` (simulación de ponderaciones)
   * `GET /api/v1/analytics/ocupaciones/descargar` (descarga CSV analítico)
+* **Data Science, Brechas & Alertas Tempranas:**
+  * `GET /api/v1/ds/brechas-habilidades` (Talent Gap Score y catálogo de habilidades emergentes 2026+)
+  * `GET /api/v1/ds/reglas-deteccion` (Reglas estadísticas formales R1-R4 y umbrales de alerta)
+  * `GET /api/v1/ds/alertas-tendencias` (Sistema automatizado de alertas tempranas CRÍTICA, ALTA, MODERADA)
+  * `GET /api/v1/ds/comparativa-educativo-laboral` (Demanda laboral vs egresados oficiales y coeficiente CCE)
+  * `GET /api/v1/ds/reporte-integral` (Diagnóstico consolidado inter-equipos para BI, UI y Producto)
+
